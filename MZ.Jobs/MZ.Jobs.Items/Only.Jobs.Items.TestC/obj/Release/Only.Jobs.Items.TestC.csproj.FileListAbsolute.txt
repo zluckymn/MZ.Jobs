@@ -1,0 +1,6 @@
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs\bin\Release\Only.Jobs.Items.TestC.dll.config
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs\bin\Release\Only.Jobs.Items.TestC.dll
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs\bin\Release\Only.Jobs.Items.TestC.pdb
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs.Items\Only.Jobs.Items.TestC\obj\Release\Only.Jobs.Items.TestC.dll
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs.Items\Only.Jobs.Items.TestC\obj\Release\Only.Jobs.Items.TestC.pdb
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs.Items\Only.Jobs.Items.TestC\obj\Release\Only.Jobs.Items.TestC.csprojResolveAssemblyReference.cache

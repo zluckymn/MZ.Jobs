@@ -1,0 +1,6 @@
+F:\MN测试Project\调度器\Only.Jobs\MZ.Jobs\bin\Debug\MZ.Jobs.Items.JobUpdater.dll.config
+F:\MN测试Project\调度器\Only.Jobs\MZ.Jobs\bin\Debug\MZ.Jobs.Items.JobUpdater.dll
+F:\MN测试Project\调度器\Only.Jobs\MZ.Jobs\bin\Debug\MZ.Jobs.Items.JobUpdater.pdb
+F:\MN测试Project\调度器\Only.Jobs\MZ.Jobs.Items\Only.Jobs.Items.TestB\obj\Debug\MZ.Jobs.Items.JobUpdater.dll
+F:\MN测试Project\调度器\Only.Jobs\MZ.Jobs.Items\Only.Jobs.Items.TestB\obj\Debug\MZ.Jobs.Items.JobUpdater.pdb
+F:\MN测试Project\调度器\Only.Jobs\MZ.Jobs.Items\Only.Jobs.Items.TestB\obj\Debug\MZ.Jobs.Items.JobUpdater.csprojResolveAssemblyReference.cache

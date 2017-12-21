@@ -1,0 +1,10 @@
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs\bin\Release\MZ.Jobs.Items.TestB.dll.config
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs\bin\Release\MZ.Jobs.Items.TestB.dll
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs\bin\Release\MZ.Jobs.Items.TestB.pdb
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs.Items\Only.Jobs.Items.TestB\obj\Release\MZ.Jobs.Items.TestB.dll
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs.Items\Only.Jobs.Items.TestB\obj\Release\MZ.Jobs.Items.TestB.pdb
+F:\MN测试Project\调度器\Only.Jobs\MZ.Jobs\bin\Release\MZ.Jobs.Items.TestB.dll.config
+F:\MN测试Project\调度器\Only.Jobs\MZ.Jobs\bin\Release\MZ.Jobs.Items.TestB.dll
+F:\MN测试Project\调度器\Only.Jobs\MZ.Jobs\bin\Release\MZ.Jobs.Items.TestB.pdb
+F:\MN测试Project\调度器\Only.Jobs\MZ.Jobs.Items\Only.Jobs.Items.TestB\obj\Release\MZ.Jobs.Items.TestB.dll
+F:\MN测试Project\调度器\Only.Jobs\MZ.Jobs.Items\Only.Jobs.Items.TestB\obj\Release\MZ.Jobs.Items.TestB.pdb

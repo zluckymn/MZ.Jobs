@@ -1,0 +1,10 @@
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs.Core\bin\Release\Only.Jobs.Core.dll.config
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs.Core\bin\Release\Only.Jobs.Core.dll
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs.Core\bin\Release\Only.Jobs.Core.pdb
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs.Core\bin\Release\MySql.Data.dll
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs.Core\bin\Release\Newtonsoft.Json.dll
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs.Core\bin\Release\SqlSugar.dll
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs.Core\bin\Release\Newtonsoft.Json.xml
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs.Core\obj\Release\Only.Jobs.Core.csprojResolveAssemblyReference.cache
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs.Core\obj\Release\Only.Jobs.Core.dll
+F:\MN测试Project\调度器\Only.Jobs\Only.Jobs.Core\obj\Release\Only.Jobs.Core.pdb

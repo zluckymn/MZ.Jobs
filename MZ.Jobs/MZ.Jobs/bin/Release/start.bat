@@ -1,0 +1,1 @@
+net start MZ.Jobs
