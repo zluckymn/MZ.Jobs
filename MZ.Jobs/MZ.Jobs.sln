@@ -17,9 +17,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MZ.Jobs", "MZ.Jobs\MZ.Jobs.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MZ.Jobs.Core", "MZ.Jobs.Core\MZ.Jobs.Core.csproj", "{8904F027-6C8A-4B87-9238-BCB8FA0C2B5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MZ.Jobs.Items", "..\..\..\115Box\Autolink3.0\MZOperationPlatform\MZ.Job.Items\MZ.Jobs.Items.csproj", "{BA708B75-BBE3-4EC4-8BCF-66E46B234A4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MZ.Jobs.Items", "..\..\..\..\115Box\Autolink3.0\MZOperationPlatform\MZ.Job.Items\MZ.Jobs.Items.csproj", "{BA708B75-BBE3-4EC4-8BCF-66E46B234A4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MZ.BusinessLogicLayer", "..\..\..\115Box\Autolink3.0\MZOperationPlatform\MZ.BusinessLogicLayer\MZ.BusinessLogicLayer.csproj", "{574D8FE0-B846-4854-A0DD-5BA1820EDDF1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MZ.BusinessLogicLayer", "..\..\..\..\115Box\Autolink3.0\MZOperationPlatform\MZ.BusinessLogicLayer\MZ.BusinessLogicLayer.csproj", "{574D8FE0-B846-4854-A0DD-5BA1820EDDF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

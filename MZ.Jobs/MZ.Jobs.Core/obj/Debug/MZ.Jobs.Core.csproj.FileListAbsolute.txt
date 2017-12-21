@@ -28,3 +28,17 @@ F:\MN测试Project\调度器\Only.Jobs\MZ.Jobs.Core\bin\Debug\zh-Hans\System.Web
 F:\MN测试Project\调度器\Only.Jobs\MZ.Jobs.Core\obj\Debug\MZ.Jobs.Core.dll
 F:\MN测试Project\调度器\Only.Jobs\MZ.Jobs.Core\obj\Debug\MZ.Jobs.Core.pdb
 F:\MN测试Project\调度器\Only.Jobs\MZ.Jobs.Core\obj\Debug\MZ.Jobs.Core.csprojResolveAssemblyReference.cache
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\bin\Debug\MZ.Jobs.Core.dll.config
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\bin\Debug\MZ.Jobs.Core.dll
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\bin\Debug\MZ.Jobs.Core.pdb
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\bin\Debug\log4net.dll
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\bin\Debug\MongoDB.Bson.dll
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\bin\Debug\MongoDB.Driver.dll
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\bin\Debug\Newtonsoft.Json.dll
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\bin\Debug\System.Web.Mvc.dll
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\bin\Debug\log4net.xml
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\bin\Debug\Newtonsoft.Json.xml
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\bin\Debug\System.Web.Mvc.xml
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\bin\Debug\zh-Hans\System.Web.Mvc.resources.dll
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\obj\Debug\MZ.Jobs.Core.dll
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\obj\Debug\MZ.Jobs.Core.pdb
