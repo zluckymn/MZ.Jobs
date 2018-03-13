@@ -111,7 +111,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>en5mHMMEwTq/QKODlOaqTH2qBwlPNC0ZTqoawuCLu2A=</dsig:DigestValue>
+        <dsig:DigestValue>WL5BO340NbGLoLJd2CAofIZYGUkfUrd1KQZsECjQFWA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -123,7 +123,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Zwtr6+cTuLLHDMnAdl/EyY5W1mKdtdIRGQ7Tqu1hOHM=</dsig:DigestValue>
+        <dsig:DigestValue>6kM/QlESR1wABSpZSv7dc4GAfnohAcLAzl53sDCppWY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -212,14 +212,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Yinhe.ProcessingCenter.dll" size="1009152">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Yinhe.ProcessingCenter.dll" size="1023488">
       <assemblyIdentity name="Yinhe.ProcessingCenter" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>vNMAThGmHMNI9Ry+3PD6oGRmw8y0cQyqm0WI6mNV5Zk=</dsig:DigestValue>
+        <dsig:DigestValue>adSlqBEegxfRYI0R/6XLHXslry4btyvYHY8PIbUwlDw=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -229,7 +229,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>9FoO3xtSgPacb6DkM12Nmmv6HRVYmKKS4FKSGQitW4k=</dsig:DigestValue>
+      <dsig:DigestValue>/KkElyNfTUkYCYOelCTWSsvnImhRZR+zg0aAlcvEd4c=</dsig:DigestValue>
     </hash>
   </file>
   <file name="ReadMe.txt" size="717">

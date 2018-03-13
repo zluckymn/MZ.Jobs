@@ -111,7 +111,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>OX+cyTuxueAu7knyzox5rgOJWMJJjaeyQe/jF+o+4lc=</dsig:DigestValue>
+        <dsig:DigestValue>WL5BO340NbGLoLJd2CAofIZYGUkfUrd1KQZsECjQFWA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -123,7 +123,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>MD5bLGCqkKVaTkQSA3U8EUfni+4a6Thiptl3bT+vyGU=</dsig:DigestValue>
+        <dsig:DigestValue>6kM/QlESR1wABSpZSv7dc4GAfnohAcLAzl53sDCppWY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -136,6 +136,18 @@
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
         <dsig:DigestValue>bMDLzVxHCcahyX9VgcNH2T5YbnzA1kv/tNMsbnU0dqQ=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="NLog.dll" size="282624">
+      <assemblyIdentity name="NLog" version="1.0.0.505" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>t4YJP7zgxawLgt42kgAFud4CU1hA3G7FEC4QaBypMvY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -200,14 +212,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Yinhe.ProcessingCenter.dll" size="1009152">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Yinhe.ProcessingCenter.dll" size="1023488">
       <assemblyIdentity name="Yinhe.ProcessingCenter" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>vNMAThGmHMNI9Ry+3PD6oGRmw8y0cQyqm0WI6mNV5Zk=</dsig:DigestValue>
+        <dsig:DigestValue>adSlqBEegxfRYI0R/6XLHXslry4btyvYHY8PIbUwlDw=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -217,7 +229,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>oXS7+PzV9aMKjuMakHxgoSpfjydGLBkMaWMzPrZ4JJs=</dsig:DigestValue>
+      <dsig:DigestValue>/KkElyNfTUkYCYOelCTWSsvnImhRZR+zg0aAlcvEd4c=</dsig:DigestValue>
     </hash>
   </file>
   <file name="ReadMe.txt" size="717">

@@ -89,10 +89,10 @@ F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\bin\Debug\Common.Logging
 F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\bin\Debug\log4net.dll
 F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\bin\Debug\MongoDB.Bson.dll
 F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\bin\Debug\MongoDB.Driver.dll
-F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\bin\Debug\MZ.Jobs.Core.dll
 F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\bin\Debug\Quartz.dll
 F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\bin\Debug\Topshelf.dll
 F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\bin\Debug\Topshelf.Log4Net.dll
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\bin\Debug\Yinhe.ProcessingCenter.dll
 F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\bin\Debug\Newtonsoft.Json.dll
 F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\bin\Debug\System.Web.Mvc.dll
 F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\bin\Debug\MZ.Jobs.Core.pdb
@@ -113,3 +113,4 @@ F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\obj\Debug\MZ.Jobs.exe.ma
 F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\obj\Debug\MZ.Jobs.application
 F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\obj\Debug\MZ.Jobs.exe
 F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\obj\Debug\MZ.Jobs.pdb
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\bin\Debug\NLog.dll
