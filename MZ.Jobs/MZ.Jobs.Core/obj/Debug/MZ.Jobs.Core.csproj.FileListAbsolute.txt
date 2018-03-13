@@ -40,5 +40,12 @@ F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\bin\Debug\log4net.x
 F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\bin\Debug\Newtonsoft.Json.xml
 F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\bin\Debug\System.Web.Mvc.xml
 F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\bin\Debug\zh-Hans\System.Web.Mvc.resources.dll
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\bin\Debug\MZ.Jobs.Core.dll.config
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\bin\Debug\MZ.Jobs.Core.dll
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\bin\Debug\MZ.Jobs.Core.pdb
 F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\obj\Debug\MZ.Jobs.Core.dll
 F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\obj\Debug\MZ.Jobs.Core.pdb
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\bin\Debug\MZ.Jobs.Core.dll.config
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\bin\Debug\MZ.Jobs.Core.dll
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs\bin\Debug\MZ.Jobs.Core.pdb
+F:\MN测试Project\调度器\RemoteJobs\MZ.Jobs\MZ.Jobs.Core\obj\Debug\MZ.Jobs.Core.csprojResolveAssemblyReference.cache

@@ -121,7 +121,7 @@
     </Reference>
     <Reference Include="Yinhe.ProcessingCenter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\115Box\Autolink3.0\MZOperationPlatform\Library\ProcessingCenter\Yinhe.ProcessingCenter.dll</HintPath>
+      <HintPath>..\Librarys\Yinhe.ProcessingCenter.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

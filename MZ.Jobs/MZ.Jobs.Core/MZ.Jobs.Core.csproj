@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\MZ.Jobs\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -58,7 +58,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Yinhe.ProcessingCenter">
-      <HintPath>..\..\..\..\115Box\Autolink3.0\MZOperationPlatform\Library\ProcessingCenter\Yinhe.ProcessingCenter.dll</HintPath>
+      <HintPath>..\Librarys\Yinhe.ProcessingCenter.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
