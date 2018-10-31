@@ -39,7 +39,8 @@ coder们改造重点看MZ.jobs项目，然后根据WebAPI接口编写后台支�
 
 3.使用aspNet webAPI， Quartz ，ELK日志展示， MongoDB(作业日志存储）rabbitMQ nginx
 
-
+[Alt text](https://github.com/zluckymn/Remote.Quartz.Jobs/jobs.png)
 
 ps对Only.jobs增加远程自动化更新与优化调度操作
 https://github.com/mamingbo/Only.Jobs
+ 
