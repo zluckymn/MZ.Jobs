@@ -26,7 +26,7 @@ https://github.com/dotnetcore/surging
  
 # 如何使用
 
-因为最近才空出时间来进行维护之前的项目，程序已应用于内部几十家服务器上部署并运行，代码较乱未梳理还未上传完成（如后端API）
+因为最近才空出时间来进行维护之前的项目，程序已应用于内部几十家服务器上部署并运行，代码较乱未梳理凑活着看，还未上传完成（如后端API）
 coder们改造重点看MZ.jobs项目，然后根据WebAPI接口编写后台支持。webhost下 JobsController
 有需要问题请提issue。
 
