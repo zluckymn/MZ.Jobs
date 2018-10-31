@@ -77,7 +77,7 @@ namespace BusinessLogicLayer
                 {
                     return ConfigurationManager.AppSettings["RabbitMQHostStr"];
                 }
-                return "host=192.168.185.173:5672;username=antapos;password=antapos";
+                return "host=192.168.1.173:5672;username=X;password=X";
             }
         }
         /// <summary>
@@ -105,7 +105,7 @@ namespace BusinessLogicLayer
                 {
                     return ConfigurationManager.AppSettings["SendMailAddress"] ;
                 }
-                return "zhengbomeng@anta.com";
+                return "1";
             }
         }
         public static string SendMailPassWord
@@ -116,7 +116,7 @@ namespace BusinessLogicLayer
                 {
                     return ConfigurationManager.AppSettings["SendMailPassWord"] ;
                 }
-                return "anta.1234";
+                return "1";
             }
         }
     }
