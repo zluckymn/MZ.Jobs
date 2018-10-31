@@ -7,7 +7,8 @@
 待完善功能
 1.分布式高可用：后续可以通过同一个作业在多台机器上通过锁机制保证只有一台执行（进行中）
 2.可视化报表ELK展示
-3.aspnet core 支持，后续支持linux
+3.aspnet core 支持支持linux
+4.后端管理服务代码
 
  
 
@@ -18,7 +19,7 @@
 
 #2.可支持远程更新服务，只需定时上传作业业务类到更新站点下（）
 
-#3.使用aspNet ebAPI， Quartz ，ELK日志展示， MongoDB(作业日志存储）
+#3.使用aspNet webAPI， Quartz ，ELK日志展示， MongoDB(作业日志存储）
 
 
 
