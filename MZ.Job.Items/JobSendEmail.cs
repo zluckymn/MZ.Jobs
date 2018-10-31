@@ -46,7 +46,7 @@ namespace MZ.Jobs.Items
             var sendUserIds = topRecoredList.Select(c => (BsonValue)c.Text("arrivedUserIds"));
             var sendUserList = _dataop.FindAll("SysUser").SetFields("emailAddr", "userId").ToList();
             var titileDistinct = new List<int>();
-            var smtp = AntaSmtpHelper.loadSmtpInfo();
+            var smtp = SmtpHelper.loadSmtpInfo();
             var resultJson = string.Empty;
             //对重复的titile内容进行过滤减少展示
             foreach (var messageInfo in topRecoredList)
@@ -120,7 +120,7 @@ namespace MZ.Jobs.Items
                 {
                     title = title.Replace("\r", " ");
                     title = title.Replace("\n", " ");
-                    var mailMessage = AntaSmtpHelper.buildMailMessage(mailAddressArr.Distinct().ToList(), content, title);
+                    var mailMessage = SmtpHelper.buildMailMessage(mailAddressArr.Distinct().ToList(), content, title);
                     smtp.SendAsync(mailMessage,null);
                     DBChangeQueue.Instance.EnQueue(new Yinhe.ProcessingCenter.DataRule.StorageData()
                     {

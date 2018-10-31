@@ -128,7 +128,7 @@
     <Compile Include="Business\BusinessBase.cs" />
     <Compile Include="Business\SystemMonitorBll.cs" />
     <Compile Include="Common\MessagePackHelper.cs" />
-    <Compile Include="Common\AntaSmtpHelper.cs" />
+    <Compile Include="Common\SmtpHelper.cs" />
     <Compile Include="Common\AESHelper.cs" />
     <Compile Include="Common\Common.cs" />
     <Compile Include="Common\CusAppConfig.cs" />
