@@ -1,0 +1,141 @@
+﻿@{
+    ViewBag.Title = "ServerIndex";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+    var customerList = ViewData["customerList"] as List<BsonDocument>;
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @*<a class="p-btn bg-red" href="http://192.168.1.115:8080/" target="_blank">站点一键发布1</a>*@
+                <a class="p-btn bg-red" href="http://192.168.1.119:8080/" target="_blank">站点一键发布</a>
+                <div class="mt10 mb10 pb10 bb">
+                    <ul id="selectList" class="nav nav-pills">
+                        @if (customerList.Count > 0)
+                        {
+                            var MZInfo = customerList.FirstOrDefault(t => t.String("name") == "蒙正内部");
+                            <li code='@MZInfo.String("customerCode")' onclick="LoadList(this)"><a href="javascript:void(0);">@MZInfo.String("name")</a></li>
+                            foreach (var customer in customerList.Where(t => t.String("name") != "蒙正内部").ToList())
+                            {
+                                <li code='@customer.String("customerCode")' onclick="LoadList(this)"><a href="javascript:void(0);">@customer.String("name")</a></li>
+                            }
+                        }
+                    </ul>
+                </div>
+                <div id="serverList">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="Decryption" style="display:none">
+    解码密码：<input name="secretkey" type="text" />
+</div>
+<script>
+    SetMenu(4, 2);
+    //LoadList();
+    $("#selectList").find("li").first().click();
+    function LoadList(obj) {
+        var customerCode = $(obj).attr("code");
+        $("#selectList").find("li.active").removeClass("active");
+        $(obj).addClass("active");
+        $("#serverList").load("/OperationPlatform/ServerList?customerCode=" + customerCode + "&r=" + Math.random());
+    }
+    function reload() {
+        $("#selectList").find("li.active").click();
+    }
+    function LoadIISSite(serverId) {
+        $("#serverList").load("/OperationPlatform/ServerIISSiteList?serverId=" + serverId + "&r=" + Math.random());
+    }
+
+    function EditServer(id, customerCode) {
+        var title = "服务器信息创建";
+        if (id != 0 && id != "0") {
+            title = "服务器信息编辑";
+        }
+        $.YH.box({
+            target: '/OperationPlatform/ServerEdit?serverId=' + id + "&customerCode=" + customerCode + "&r=" + Math.random(),
+            title: title,
+            width: 360,
+            ok: function () {
+                var formData = $(this).find("form").serialize();
+                var encodeColumns = "account,password";
+                $.ajax({
+                    url: "/Home/SavePostInfoEncode",
+                    type: 'post',
+                    error: function () {
+                        layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+                        //$.tmsg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { infotype: 2 });
+                    },
+                    data: formData + "&encodeColumns=" + encodeColumns,
+                    success: function (data) {
+                        if (data.Success) {
+                            layer.msg("保存成功！", { icon: 6 });
+                            //$.tmsg("m_jfw", "保存成功！", { infotype: 1 });
+                            //LoadList();
+                            reload();
+                        }
+                        else {
+                            layer.msg(data.Message, { icon: 5 });
+                            //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                        }
+                    }
+                });
+            }
+        });
+    }
+    function SetCustomerConnect(customerCode) {
+        var title = "设置连接方式";
+        $.YH.box({
+            target: '/OperationPlatform/CustomerConnectEdit?customerCode=' + customerCode + "&r=" + Math.random(),
+            title: title,
+            width: 900,
+            ok: function () {
+                var formData = $(this).find("form").serialize();
+                var encodeColumns = "account,password,vpnAccount,vpnPassword,bljAccount,bljPassword";
+                $.ajax({
+                    url: "/Home/SavePostInfoEncode",
+                    type: 'post',
+                    error: function () {
+                        layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+                    },
+                    data: formData + "&encodeColumns=" + encodeColumns,
+                    success: function (data) {
+                        if (data.Success) {
+                            layer.msg("保存成功！", { icon: 6 });
+                            var FileInfo = data.FileInfo;
+                            var str = FileInfo.split("|");
+                            var result = eval("(" + str[0] + ")");
+                            var fileIdList = "";
+                            if (result.success) {
+                                if (str.length > 1) {
+                                    if (str[1] != "") {
+                                        var files = eval("(" + str[1] + ")");
+                                        ClientUploadFile(files);
+                                        //reload();
+                                    }
+                                }
+                            }
+                            reload();
+                        }
+                        else {
+                            layer.msg(data.Message, { icon: 5 });
+                        }
+                    }
+                });
+            }
+        });
+    }
+    function Decryption() {
+        $.YH.box({
+            target: $("#Decryption"),
+            title: "解密编码",
+            width: 350,
+            ok: function () {
+                var secretkey = $(this).find("input[name=secretkey]").val();
+                var customerCode = $("#selectList").find("li.active").attr("code");
+                $("#serverList").load("/OperationPlatform/ServerList?customerCode=" + customerCode + "&secretkey=" + secretkey + "&r=" + Math.random());
+            }
+        });
+    }
+</script>

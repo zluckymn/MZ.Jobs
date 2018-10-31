@@ -1,0 +1,77 @@
+﻿@{
+    Layout = "";
+    var customer = ViewData["customer"] as BsonDocument;
+    var webconfig = ViewData["webconfig"] as BsonDocument;
+    //var updateQuery = "";
+    //if (!customer.IsNullOrEmpty())
+    //{
+    //    updateQuery = "db.CustomerInfo.distinct('_id',{'customerId':'" + customer.String("customerId") + "'})";
+    //}
+}
+<form>
+    <input type="hidden" name="customerId" value="@customer.Int("customerId")" />
+    <table width="100%" class="table-noBorder">
+        <tr>
+            <td colspan="4" class="fb">基本信息</td>
+        </tr>
+        <tr>
+            <td>
+                名称:
+            </td>
+            <td>
+                <input type="text" name="name" value="@customer.String("name")" />
+            </td>
+            <td>
+                客户代码:
+            </td>
+            <td>
+                <input type="text" name="customerCode" value="@customer.String("customerCode")" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                文件服务代码:
+            </td>
+            <td>
+                <input type="text" name="bizGuid" value="@customer.String("bizGuid")" />
+            </td>
+            <td>
+                备注:
+            </td>
+            <td>
+                <input type="text" name="remark" value="@customer.String("remark")" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" class="fb">配置信息</td>
+        </tr>
+        <tr>
+            <td>
+                配置文件名:
+            </td>
+            <td>
+                <input type="text" name="configName" value="@webconfig.String("name")" />
+            </td>
+            <td>
+                权限控件:
+            </td>
+            <td>
+                <input type="text" name="authorityControl" value="@webconfig.String("authorityControl")" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                样式表:
+            </td>
+            <td>
+                <input type="text" name="styleSheet" value="@webconfig.String("styleSheet")" />
+            </td>
+            <td>
+                @*        备注:*@
+            </td>
+            <td>
+                @*        <input type="text" name="remark" value="@customer.String("remark")" />*@
+            </td>
+        </tr>
+    </table>
+</form>

@@ -1,0 +1,173 @@
+﻿@{
+    ViewBag.Title = "QueueStatus";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+}
+<style>
+    .input2 {
+        height: 13px;
+        vertical-align: text-top;
+        margin-top: 0;
+    }
+    .help:after {
+        content: '(?)';
+    }
+    .help{
+        color: #888;
+        cursor: pointer;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <a class="p-btn" href="http://192.168.185.173:15672" target="_blank" title="RabbitMQ服务状态">RabbitMQ Server Status</a>
+                <div style="margin-top:0px;">
+                    <div id="toolbar" class="btn-group">
+                        <label class="btn btn-default" for="auto">
+                            <input type="checkbox" id="auto" class="input2"><span>自动刷新</span>
+                        </label>
+                        <button id="help" type="button" class="btn btn-default">
+                            状态说明
+                        </button>
+                    </div>
+                    <table id="table" class="table"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    SetMenu(3, 3);
+    function status_help() {
+        layer.open({
+            title: "响应状态",
+            content: '<p><span class="fa fa-circle ml10 p-f_green1" style="font-size:14px;" title="阈值内正常响应">Normal</span>：消费时刻(响应时刻)与生产时刻(侦测时刻)差值在阈值内，表示RabbitMQ服务器队列正常</p><p><span class="fa fa-circle ml10" style="font-size:14px;" title="超出阈值响应时间">Timeout</span>：消费时刻(响应时刻)与生产时刻(侦测时刻)差值超出设定阈值内，表示RabbitMQ服务器队列繁忙阻塞(响应时刻 - 侦测时刻 > 阈值)</p>',
+            cancel: function () {
+            }, yes: function () {
+                layer.closeAll();
+            }
+        });
+    }
+    function diff_help() {
+        layer.open({
+            title: "监控状态",
+            content: '<p><span class="fa fa-circle ml10 p-f_green1" style="font-size:14px;">Normal</span>：生产者在正常时间内生产测试数据，表示监控服务正常且RabbitMQ服务器插入正常</p><p><span class="fa fa-circle ml10" style="font-size:14px;">Idle</span>：据上一次生产时刻(侦测时刻)至今，监控服务较长时间没有生产测试数据，表示监控服务异常(未启动)或RabbitMQ服务异常无法写入数据(生产)(当前时刻 - 侦测时刻 - 侦测间隔 > 20s)</p>',
+            cancel: function () {
+            }, yes: function () {
+                layer.closeAll();
+            }
+        });
+    }
+    var opt = {
+        url: '/SystemMonitor/QueueRunStatus', //请求后台的URL（*）
+        method: 'get', //请求方式（*）
+        toolbar: '#toolbar',                //工具按钮用哪个容器
+        striped: true, //是否显示行间隔色
+        cache: false, //是否使用缓存，默认为true（*）
+        pagination: true, //是否显示分页（*）
+        sortable: true, //是否启用排序
+        sortOrder: "asc", //排序方式
+        queryParams: function (params) {
+            var temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                limit: params.limit, //页面大小
+                offset: params.offset, //页码
+                search: params.search
+            };
+            return temp;
+        }, //传递参数（*）
+        sidePagination: "server", //分页方式：client客户端分页，server服务端分页（*）
+        pageNumber: 1, //初始化加载第一页，默认第一页
+        pageSize: 10, //每页的记录行数（*）
+        pageList: [10, 25, 50, 100], //可供选择的每页的行数（*）
+        search: true, //是否显示表格搜索，
+        strictSearch: true,
+        trimOnSearch: false,
+        showColumns: true, //是否显示所有的列
+        showRefresh: true, //是否显示刷新按钮
+        minimumCountColumns: 2, //最少允许的列数
+        clickToSelect: true, //是否启用点击选中行
+        uniqueId: "host", //每一行的唯一标识，一般为主键列
+        showToggle: true, //是否显示详细视图和列表视图的切换按钮
+        cardView: false, //是否显示详细视图
+        detailView: false, //是否显示父子表
+        columns: [
+            {
+                field: 'host',
+                title: '服务器地址',
+                align: 'center'
+            }, {
+                field: 'name',
+                align: 'center',
+                title: '侦测队列'
+            }, {
+                field: 'interval',
+                align: 'center',
+                title: '侦测间隔(秒)'
+            }, {
+                field: 'threshold',
+                align: 'center',
+                title: '阈值(秒)'
+            }, {
+                field: 'ping',
+                title: '侦测时刻',
+                align: 'center'
+            }, {
+                field: 'pong',
+                align: 'center',
+                title: '响应时刻'
+            }, {
+                field: 'status',
+                title: '响应状态 <span class="help" id="status-help" onclick="status_help()"></span>',
+                align: 'center',
+                formatter: function (value, row, index) {
+                    return value === 1
+                        ? '<span class="fa fa-circle ml10" style="font-size:14px;" title="超出阈值响应时间">Timeout</span>'
+                        : '<span class="fa fa-circle ml10 p-f_green1" style="font-size:14px;" title="阈值内正常响应">Normal</span>';
+                }
+            }, {
+                field: 'diff',
+                title: '监控状态 <span class="help" id="diff-help" onclick="diff_help()"></span>',
+                align: 'center',
+                formatter: function (value, row, index) {
+                    return value === 1
+                        ? '<span class="fa fa-circle ml10" style="font-size:14px;" title="长时间未侦测,检查监控服务或MQ服务">Idle</span>'
+                        : '<span class="fa fa-circle ml10 p-f_green1" style="font-size:14px;" title="正常监控">Normal</span>';
+                }
+            }
+        ]
+    };
+    var autoRefresh = false;
+    setTimeout(refresh, 5000);
+    function refresh() {
+        if (autoRefresh) {
+            $('#table').bootstrapTable('refresh', { silent: true });
+        }
+        setTimeout(refresh, 5000);
+    }
+    $("#auto").change(function () {
+        autoRefresh = $(this).is(':checked');
+    });
+    $('#table').bootstrapTable(opt);
+    var $table = $('#table');
+    $table.on('post-body.bs.table', function () {
+        var $search = $table.data('bootstrap.table')
+            .$toolbar.find('.search input');
+        $search.attr('placeholder', '搜索IP');
+    });
+    
+    $("#help").click(function () {
+        var html = '';
+        html +=
+            '<div><h4>响应状态</h4><p style="margin-top:5px"><span class="fa fa-circle ml10 p-f_green1" style="font-size:14px;" title="阈值内正常响应">Normal</span>：消费时刻(响应时刻)与生产时刻(侦测时刻)差值在阈值内，表示RabbitMQ服务器队列正常</p><p><span class="fa fa-circle ml10" style="font-size:14px;" title="超出阈值响应时间">Timeout</span>：消费时刻(响应时刻)与生产时刻(侦测时刻)差值超出设定阈值内，表示RabbitMQ服务器队列繁忙阻塞(响应时刻 - 侦测时刻 > 阈值)</p></div>';
+        html += '<br>';
+        html += '<div><h4>监控状态</h4><p style="margin-top:5px"><span class="fa fa-circle ml10 p-f_green1" style="font-size:14px;">Normal</span>：生产者在正常时间内生产测试数据，表示监控服务正常且RabbitMQ服务器插入正常</p><p><span class="fa fa-circle ml10" style="font-size:14px;">Idle</span>：据上一次生产时刻(侦测时刻)至今，监控服务较长时间没有生产测试数据，表示监控服务异常(未启动)或RabbitMQ服务异常无法写入数据(生产)(当前时刻 - 侦测时刻 - 侦测间隔 > 20s)</p></div>';
+        layer.open({
+            title: "<b>状态说明</b>",
+            content: html,
+            cancel: function () {
+            }, yes: function () {
+                layer.closeAll();
+            }
+        });
+    });
+</script>

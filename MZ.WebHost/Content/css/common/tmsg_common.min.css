@@ -1,0 +1,23 @@
+/*TMSG消息提示相关*/
+.qz_msgbox_layer{BACKGROUND-IMAGE:url(/Content/images/common/msgbox/gb_tip_layer.png);LINE-HEIGHT:54px;DISPLAY:inline-block;BACKGROUND-REPEAT:no-repeat;HEIGHT:54px;COLOR:#606060;FONT-SIZE:14px;FONT-WEIGHT:bold}.qz_msgbox_layer .gtl_ico_succ{BACKGROUND-IMAGE:url(/Content/images/common/msgbox/gb_tip_layer.png);LINE-HEIGHT:54px;DISPLAY:inline-block;BACKGROUND-REPEAT:no-repeat;HEIGHT:54px;COLOR:#606060;FONT-SIZE:14px;FONT-WEIGHT:bold}.qz_msgbox_layer .gtl_ico_fail{BACKGROUND-IMAGE:url(/Content/images/common/msgbox/gb_tip_layer.png);LINE-HEIGHT:54px;DISPLAY:inline-block;BACKGROUND-REPEAT:no-repeat;HEIGHT:54px;COLOR:#606060;FONT-SIZE:14px;FONT-WEIGHT:bold}.qz_msgbox_layer .gtl_ico_hits{BACKGROUND-IMAGE:url(/Content/images/common/msgbox/gb_tip_layer.png);LINE-HEIGHT:54px;DISPLAY:inline-block;BACKGROUND-REPEAT:no-repeat;HEIGHT:54px;COLOR:#606060;FONT-SIZE:14px;FONT-WEIGHT:bold}.qz_msgbox_layer .gtl_ico_wait{BACKGROUND-IMAGE:url(/Content/images/common/msgbox/gb_tip_layer.png);LINE-HEIGHT:54px;DISPLAY:inline-block;BACKGROUND-REPEAT:no-repeat;HEIGHT:54px;COLOR:#606060;FONT-SIZE:14px;FONT-WEIGHT:bold}.qz_msgbox_layer .gtl_ico_clear{BACKGROUND-IMAGE:url(/Content/images/common/msgbox/gb_tip_layer.png);LINE-HEIGHT:54px;DISPLAY:inline-block;BACKGROUND-REPEAT:no-repeat;HEIGHT:54px;COLOR:#606060;FONT-SIZE:14px;FONT-WEIGHT:bold}.qz_msgbox_layer .gtl_end{BACKGROUND-IMAGE:url(/Content/images/common/msgbox/gb_tip_layer.png);LINE-HEIGHT:54px;DISPLAY:inline-block;BACKGROUND-REPEAT:no-repeat;HEIGHT:54px;COLOR:#606060;FONT-SIZE:14px;FONT-WEIGHT:bold}.qz_msgbox_layer_wrap{TEXT-ALIGN:center;WIDTH:100%}.qz_msgbox_layer{POSITION:relative;PADDING-BOTTOM:0;MARGIN:0 auto;PADDING-LEFT:9px;PADDING-RIGHT:18px;BACKGROUND-REPEAT:repeat-x;BACKGROUND-POSITION:0 -161px;PADDING-TOP:0}.qz_msgbox_layer .gtl_ico_succ{POSITION:absolute;WIDTH:45px;BACKGROUND-POSITION:-6px 0;TOP:0;LEFT:-45px}.qz_msgbox_layer .gtl_end{POSITION:absolute;WIDTH:6px;BACKGROUND-POSITION:0 0;TOP:0;RIGHT:-6px}.qz_msgbox_layer .gtl_ico_fail{POSITION:absolute;WIDTH:45px;BACKGROUND-POSITION:-6px -108px;TOP:0;LEFT:-45px}.qz_msgbox_layer .gtl_ico_hits{POSITION:absolute;WIDTH:45px;BACKGROUND-POSITION:-6px -54px;TOP:0;LEFT:-45px}.qz_msgbox_layer .gtl_ico_wait{POSITION:absolute;WIDTH:45px;BACKGROUND-POSITION:-6px -215px;TOP:0;LEFT:-45px}.qz_msgbox_layer .gtl_ico_clear{POSITION:absolute;WIDTH:5px;BACKGROUND-POSITION:-6px 0;TOP:0;LEFT:-5px}.qz_msgbox_layer IMG{MARGIN:19px 10px 0 5px;FLOAT:left}
+/*资金管控移动节点样式*/
+.p-j-yhMoveNode{
+    /*background: rgba(0,0,0, 0.6);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);*/
+    background: rgba(202,202,202, 0.8);
+filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#cccacaca, endColorstr=#cccacaca);
+}
+.p-j-yhMoveNode .p-j-move{
+    border:1px solid #fff;
+    color:#fff;
+    background-color:#949494;
+    padding:3px 15px;
+    text-decoration:none;
+}
+.p-j-yhMoveNode .p-j-move:hover{
+    background: rgba(0,0,0, 0.6);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);
+}
+.p-j-yhMoveTrSelect{
+    border:2px dotted #5499ef;
+}

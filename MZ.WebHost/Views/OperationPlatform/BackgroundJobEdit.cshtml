@@ -1,0 +1,159 @@
+﻿@{
+    Layout = "";
+    var customerCode = ViewData["customerCode"] as string;
+    var job = ViewData["job"] as BsonDocument;
+    //var customerList = ViewData["customerList"] as List<BsonDocument>;
+    var stateMentList = ViewData["stateMentList"] as List<BsonDocument>;
+    var tableName = "BackgroundJob";
+    var updateQuery = "";
+    var jobId = Guid.NewGuid().ToString();
+    var state = "1";
+    if (!job.IsNullOrEmpty())//编辑
+    {
+        state = job.String("state");
+        jobId = job.String("jobId");
+        updateQuery = "db." + tableName + ".distinct('_id',{'jobId':'" + job.String("jobId") + "'})";
+    }
+}
+<form >
+    <input type="hidden" name="tbName" value="@tableName" />
+    <input type="hidden" name="queryStr" value="@updateQuery" />
+    <input type="hidden" name="jobId" value="@jobId" />
+    <input type="hidden" name="state" value="@state" />
+    <input type="hidden" name="customerCode" value="@customerCode"/>
+    <table width="100%" class="table-noBorder">
+        <tr>
+            <td width="120">
+                名称:
+            </td>
+            <td>
+                <input type="text" name="name" value="@job.String("name")"class="form-control" />
+            </td>
+        </tr>
+            <tr>
+                <td>
+                    关联报表:
+                </td>
+                <td>
+                    <select name="statementId"class="form-control" onchange="changeStateMent(this)">
+                        <option value="0">无</option>
+                        @foreach (var statement in stateMentList)
+                        {
+                            <option @if (job.Int("statementId") == statement.Int("statementId"))
+                                    {
+                                        <text> selected="selected" </text>
+                                    } value="@statement.Int("statementId")">@statement.String("name")</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+        <tr>
+            <td>
+                类型:
+            </td>
+            <td>
+                <select name="jobType" class="form-control">
+                    <option @if (job.Int("jobType") == 3) { <text> selected="selected" </text> } value="3">系统站点监控</option>
+                    <option @if (job.Int("jobType") == 0) { <text> selected="selected" </text> } value="0">业务事务</option>
+                    <option @if (job.Int("jobType") == 1) { <text> selected="selected" </text> } value="1">管理器</option>
+                    <option @if (job.Int("jobType") == 2) { <text> selected="selected" </text> } value="2">自动更新</option>
+
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                所在程序集:
+            </td>
+            <td>
+                <input type="text" name="assemblyName" value="@job.String("assemblyName")" class="form-control"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                类名:
+            </td>
+            <td>
+                <input type="text" name="className" value="@job.String("className")"class="form-control" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                描述:
+            </td>
+            <td>
+                <input type="text" name="descrption" value="@job.String("descrption")" class="form-control"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                启动参数:
+            </td>
+            <td>
+                <input type="text" name="jobArgs" value="@job.String("jobArgs")" class="form-control"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                cron表达式:
+            </td>
+            <td>
+                <input type="text" name="cron" value="@job.String("cron")" class="form-control"/>
+                <a href="javascript:;" onclick="getExpr()">生成</a>
+                <a href="javascript:;" onclick="useCustormer('@customerCode')">应用到当前job列表</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                cron表达式描述:
+            </td>
+            <td>
+                <input type="text" name="cronDesc" value="@job.String("cronDesc")" class="form-control"/>
+            </td>
+        </tr>
+    </table>
+</form>
+<script>
+    function useCustormer(customerCode)
+    {
+        var cron = $("input[name=cron]").val();
+        if (confirm("批量更新cron表达式"))
+        {
+            $.ajax({
+                url: "/Home/BatchUpdateCron",
+                type: 'post',
+                error: function () {
+                    layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+                },
+                data: {
+                    customerCode: customerCode,
+                    cron: cron
+                },
+                success: function (data) {
+                    if (data.Success) {
+                        layer.msg("更新成功！", { icon: 6 });
+                        reload();
+                        if (customerCode != "")
+                        {
+                            UpdateCustomer(customerCode);
+                        }
+                    }
+                    else {
+                        layer.msg(data.Message, { icon: 5 });
+                    }
+                }
+            });
+        }
+    }
+    function changeStateMent(obj)
+    {
+        var val = $(obj).val();
+        if (val == 0 || val == "0") {
+            $("input[name=assemblyName]").val('');
+            $("input[name=className]").val('');
+        } else {
+            $("input[name=assemblyName]").val('MZ.Jobs.Items.dll');
+            $("input[name=className]").val('MZ.Jobs.Items.JobStateMent');
+        }
+    }
+</script>

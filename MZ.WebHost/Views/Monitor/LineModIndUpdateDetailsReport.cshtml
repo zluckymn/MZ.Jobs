@@ -1,0 +1,75 @@
+﻿
+@{
+    var datas = ViewBag.datas as List<BsonDocument> ?? new List<BsonDocument>();
+    var headers = ViewBag.headers as List<BsonDocument> ?? new List<BsonDocument>();
+}
+
+
+<div class="panel panel-default">
+    <div class="panel-title bg-green">
+        <h5 class="p-title2">系列中模块修改详情</h5>
+    </div>
+    <div class="table-responsive pre-scrollable" style="padding:10px; max-height:430px;">
+        <table class="table table-hover">
+            <colgroup>
+                <col width="8%" />
+                <col width="10%" />
+                <col width="10%" />
+                <col width="16%" />
+                <col width="8%" />
+                <col width="9%" />
+                <col width="10%" />
+                <col width="8%" />
+                <col width="8%" />
+                <col width="8%" />
+            </colgroup>
+            <thead>
+                <tr>
+                    @foreach (var header in headers)
+                    {
+                        if (header.String("name").Contains("模块所属项目/系列"))
+                        {
+                            header.Set("name", "模块所属系列");
+                        }
+                        <th>@header.Text("name")
+                            @if (header.Int("hasUrl") == 1)
+                            {
+                                <span>(地址)</span>
+                            }
+                        </th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var data in datas)
+                {
+                    <tr>
+                        @foreach (var header in headers)
+                        {
+                            var field = header.Text("field");
+                            var index = data.Int("index");
+                            <td>
+                                @if (header.Int("hasUrl") == 1)
+                                {
+                                    @*<a href="@data.Text("url")" target="_blank">@data.Text(field)</a>*@
+                                    @(data.Text(field) + "(" + data.Text("url") + ")");
+                                }
+                                else
+                                {
+                                    @data.Text(field)
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+                @if (datas.Count == 0)
+                {
+                    <tr>
+                        <td colspan="@headers.Count">暂无数据</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

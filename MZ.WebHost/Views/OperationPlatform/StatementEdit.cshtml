@@ -1,0 +1,77 @@
+﻿@{
+    Layout = "";
+    var statement = ViewData["statement"] as BsonDocument;
+    var updateQuery = "";
+    var guid = Guid.NewGuid().ToString();
+    if (!statement.IsNullOrEmpty())
+    {
+        guid = statement.String("guid");
+        updateQuery = "db.Statement.distinct('_id',{'statementId':'" + statement.String("statementId") + "'})";
+    }
+}
+<form>
+<input type="hidden" name="tbName" value="Statement" />
+<input type="hidden" name="queryStr" value="@updateQuery" />
+<input type="hidden" name="guid" value="@guid" />
+<table width="100%" class="table-noBorder">
+    <tr>
+    <td>
+        名称:
+    </td>
+    <td>
+        <input type="text" name="name" value="@statement.String("name")" />
+    </td>
+    </tr>
+    <tr>
+    <td>
+        存储表名:
+    </td>
+    <td>
+        <input type="text" name="storageTbName" value="@statement.String("storageTbName")" />
+    </td>
+    </tr>
+    <tr>
+    <td>
+        存储表名主键:
+    </td>
+    <td>
+        <input type="text" name="storageTbKeyName" value="@statement.String("storageTbKeyName")" />
+    </td>
+    </tr>
+    <tr>
+    <td>
+        主表名:
+    </td>
+    <td>
+        <input type="text" name="mainTbName" value="@statement.String("mainTbName")" />
+    </td>
+    </tr>
+    <tr>
+    <td>
+        唯一字段名:
+    </td>
+    <td>
+        <input type="text" name="primaryKeyName" value="@statement.String("primaryKeyName")" />
+    </td>
+    </tr>
+    <tr>
+        <td>
+            是否是增量:
+        </td>
+        <td>
+            <input type="radio" name="isAdd" value="1" @if (statement.Int("isAdd") == 1) { <text> checked="checked" </text>   } />是
+            <input type="radio" name="isAdd" value="2" @if (statement.Int("isAdd") == 2 || statement.Int("isAdd") == 0) { <text> checked="checked" </text>   } />否
+        </td>
+    </tr>
+    <tr>
+    <td>
+        是否使用:
+    </td>
+    <td>
+        <input type="radio" name="isUse" value="1" @if (statement.Int("isUse") == 1 || statement.Int("isUse") == 0)
+                                                   { <text> checked="checked" </text>  } />是
+        <input type="radio" name="isUse" value="2" @if(statement.Int("isUse")==2){ <text> checked="checked" </text>  }/>否
+    </td>
+    </tr>
+</table>
+</form>

@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewBag.Title = "BigDataCityCatDetail";
+    Layout = "";
+
+    var cityStatusValueList = ViewData["cityStatusValueList"] as List<BsonDocument>;
+    var index = 0;
+}
+<table class="table table-bordered table-hover p-j-splitTable" style="margin-bottom:0;">
+    <colgroup>
+        <col width="70"/>
+        <col width="100" />
+        <col width="130" />
+        <col width="70" />
+        <col width="100" />
+        <col width="130" />
+        <col width="70" />
+        <col width="100" />
+        <col width="130" />
+    </colgroup>
+    <thead>
+        <tr class="p-table_head" style="font-weight:bold;">
+            <td>城市</td>
+            <td>数据量</td>
+            <td>更新日期</td>
+            <td>城市</td>
+            <td>数据量</td>
+            <td>更新日期</td>
+            <td>城市</td>
+            <td>数据量</td>
+            <td>更新日期</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cityDetail in cityStatusValueList.OrderBy(t=>t.String("rank")))
+        {
+        <tr>
+            <td class="bg-gray">@cityDetail.Text("cityName")</td>
+            <td>@cityDetail.Text("dataNum")</td>
+            <td>@cityDetail.Text("lastDate")</td>
+        </tr>
+        }
+    </tbody>
+</table>

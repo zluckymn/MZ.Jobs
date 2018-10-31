@@ -1,0 +1,82 @@
+﻿@using MZ.BusinessLogicLayer.Business
+@{
+    ViewBag.Title = "BackgroundJobIndex";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+    var customerList = ViewData["customerList"] as List<BsonDocument>;
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div>
+                    <div class="mb10 pb10 bb">
+                        <ul id="selectList" class="nav nav-pills">
+                            <li code="" onclick="LoadList(this)"><a href="javascript:void(0);">原始调度事务@*灰色*@<span class="fa fa-chain-broken ml5 p-f_gray2" style="font-size: 13px;"></span></a></li>
+                            @if (customerList != null && customerList.Count > 0)
+                            {
+                                CustomerInfoBll customerInfoBll = CustomerInfoBll._();
+                                foreach (var customer in customerList)
+                                {
+                                    var isRun = customerInfoBll.IsRunning(customer);
+                                    <li code='@customer.String("customerCode")' onclick="LoadList(this)"><a href="javascript:void(0);">@customer.String("name")
+
+                                        @if (isRun==false)
+                                        {
+                                         @*灰色*@<span class="fa fa-chain-broken ml5 p-f_gray2" style="font-size: 13px;"></span>
+                                        }
+                                        else
+                                        {
+                                        @*绿色*@<span class="fa fa-check-circle ml5 p-f_green1" style="font-size: 14px;"></span>
+                                        }
+                                        </a></li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <div id="jobList">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    SetMenu(4, 6);
+    toJobcustomer();
+    function toJobcustomer() {
+        $("#selectList").find("li[code='" + $.cookie('Jobcustomer') + "']").first().click();
+    }
+    function LoadList(obj) {
+        var customerCode = $(obj).attr("code");
+        rememberCode(customerCode);
+        $("#selectList").find("li.active").removeClass("active");
+        $(obj).addClass("active");
+        var url = "/OperationPlatform/BackgroundJobList?customerCode=" + customerCode + "&r=" + Math.random();
+        $("#jobList").load(url);
+    }
+    function reload() {
+        $("#selectList").find("li.active").click();
+    }
+    function rememberCode(code) {
+        $.cookie('Jobcustomer', code);
+    }
+    function getExpr() {
+        layer.open({
+            title: "在线生成表达式",
+            type: 2,
+            area: ['860px', '560px'],
+            fixed: true, 
+            content: 'http://xiongyingqi.com/cron-online/',
+            btn: ['关闭']
+            //,yes: function (index, layero) {
+            //    var obj = layer.getChildFrame('body', index);;
+            //    var ifmObj = obj.document.title;
+            //    layer.msg(ifmObj);
+            //}
+            //,btn2: function(){
+            //    layer.close();
+            //}
+
+        });
+    }
+</script>

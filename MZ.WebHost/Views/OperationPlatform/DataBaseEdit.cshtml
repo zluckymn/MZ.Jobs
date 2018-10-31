@@ -1,0 +1,88 @@
+﻿@{
+    Layout = "";
+    var customerCode = ViewData["customerCode"] as string;
+    var dataBase = ViewData["dataBase"] as BsonDocument;
+    var serverList = ViewData["serverList"] as List<BsonDocument>;
+    var updateQuery = "";
+    if (!dataBase.IsNullOrEmpty())
+    {
+        updateQuery = "db.DataBase.distinct('_id',{'dataBaseId':'" + dataBase.String("dataBaseId") + "'})";
+    }
+}
+<form>
+<input type="hidden" name="tbName" value="DataBase" />
+<input type="hidden" name="queryStr" value="@updateQuery" />
+<input type="hidden" name="customerCode" value="@customerCode" />
+<table width="100%" class="table-noBorder">
+    <tr>
+    <td>
+        名称:
+    </td>
+    <td>
+        <input type="text" name="name" value="@dataBase.String("name")" />
+    </td>
+    </tr>
+    @*<tr>
+        <td>
+            连接字符串:
+        </td>
+        <td>
+            <input type="text" name="connectionString" value="@dataBase.String("connectionString")" />
+        </td>
+    </tr>*@
+    <tr>
+        <td>
+            端口:
+        </td>
+        <td>
+            <input type="text" name="port" value="@dataBase.String("port")" />
+        </td>
+    </tr>
+    <tr>
+    <td>
+        账号:
+    </td>
+    <td>
+        <input type="text" name="account" value="@dataBase.String("account")" />
+    </td>
+    </tr>
+    <tr>
+    <td>
+        密码:
+    </td>
+    <td>
+        <input type="text" name="password" value="@dataBase.String("password")" />
+    </td>
+    </tr>
+    <tr>
+    <td>
+        所在服务器:
+    </td>
+    <td>
+        <select name="serverId" style="width:150px;">
+        @foreach (var server in serverList)
+        {
+            <option @if (server.String("serverId") == dataBase.String("serverId")) { <text> selected="selected"</text> } customerId="@server.String("customerId")" value="@server.String("serverId")">@server.String("name")</option> 
+        }
+        </select>
+    </td>
+    </tr>
+    <tr>
+        <td>
+            描述:
+        </td>
+        <td>
+            <textarea name="remark">@dataBase.String("remark")</textarea>
+        </td>
+    </tr>
+
+</table>
+</form>
+<script>
+    changeCustomer();
+    function changeCustomer() {
+        var customerId = $("customerId").val();
+        $("serverId").find("option[customerId!=" + customerId + "]").hide();
+        $("serverId").find("option[customerId=" + customerId + "]").show();
+    }
+</script>

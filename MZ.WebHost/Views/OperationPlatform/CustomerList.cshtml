@@ -1,0 +1,42 @@
+﻿@{
+    var customerList = ViewData["customerList"] as List<BsonDocument>;
+    var index = 0;
+    Layout = "";
+}
+@if (customerList.Count > 0)
+{
+<table width="100%" class="table table-bordered" style=" margin-top:10px;">
+    <thead>
+    <tr class="p-table_head">
+        <th align="left">序号</th>
+        <th align="left">名称</th>
+        <th align="left">客户代码</th>
+        <th align="left">文件服务代码</th>
+        <th align="left">服务激活时间</th>
+        <th align="left">服务ip地址</th>
+        <th align="left">操作</th>
+    </tr>
+    </thead>
+    @foreach (var customer in customerList)
+    {
+        index++;
+    <tr>
+        <td>@index</td>
+        <td>@customer.String("name")</td>
+        <td>@customer.String("customerCode")</td>
+        <td>@customer.String("bizGuid")</td>
+        <td>@customer.String("serviceActiveDate")</td>
+        <td>@customer.String("ip")</td>
+        <td>
+            <a class="fa fa-pencil mr5 p-f_blue" title="编辑" href="javascript:;" onclick="EditCustomer('@customer.String("customerId")')" ></a>
+            <a class="fa fa-close mr5 p-f_red" title="删除" href="javascript:void(0)" tbname="CustomerInfo" querystr="db.CustomerInfo.distinct('_id',{'customerId':'@customer.String("customerId")'})" onclick="CustomDeleteItem(this,LoadList);"></a>
+        </td>
+    </tr>
+    }
+</table>
+}
+else {
+    <div class="yh-msg">
+        暂无客户信息
+    </div>
+}

@@ -1,0 +1,68 @@
+﻿@{    
+    Layout = "";
+    List<BsonDocument> urlList = ViewData["urlList"] != null ? ViewData["urlList"] as List<BsonDocument> : new List<BsonDocument>();
+    int index = 0;
+}
+<div>
+  <a class="p-btn p-btn_white_1" href="javascript:;" onclick="urlEdit(0)">
+                    新增</a>
+    <table width="100%" class="table table-bordered mt10">
+        <colgroup>
+            <col width="60" />
+            <col width="150" />
+            <col />
+            <col width="200" />
+            <col width="120" />
+        </colgroup>
+        <thead>
+        <tr>
+            <th align="left">
+                序号
+            </th>
+            <th align="left">
+                名称
+            </th>
+            <th align="left">
+                配置页面地址
+            </th>
+            <th align="left">
+                初始化指引
+            </th>
+            <th align="left">
+                操作
+            </th>
+        </tr>
+        </thead>
+        @foreach (var url in urlList)
+          {
+                   
+        <tr>
+            <td>
+                @(++index)
+            </td>
+            <td>
+                @url.String("name")
+            </td>
+            <td>
+                @url.String("pageUrl")
+            </td>
+            <td>
+                @url.String("remark")
+            </td>
+            <td>
+                <a class="fa fa-pencil mr5 p-f_blue" title="编辑" href="javascript:;" onclick="urlEdit(@url.Int("urlId"))"></a>
+                <a class="fa fa-close mr5 p-f_red" title="删除" href="javascript:;" onclick="CustomDeleteItem(this,reloadGroupList);" querystr="db.InitPageUrl.distinct('_id',{'urlId':'@url.String("urlId")'})"
+                        tbname="InitPageUrl"></a>
+            </td>
+        </tr>
+        } 
+        @if (urlList.Count == 0)
+          {
+        <tr>
+            <td colspan="5">
+                暂无配置页！
+            </td>
+        </tr>
+        } 
+    </table>
+</div>

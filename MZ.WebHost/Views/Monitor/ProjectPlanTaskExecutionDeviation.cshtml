@@ -1,0 +1,49 @@
+﻿@{ 
+    var stageTaskList = ViewData["stageTaskList"] as List<BsonDocument>;
+
+}
+
+<table class="table-noBorder table-timeLine" width="100%">
+    <tr>
+        <th width="40">计划周期</th>
+        @foreach (var stageTask in stageTaskList.Skip(1))
+        {
+            <td width="100" align="center">@stageTask.String("curPeriods")天</td>
+        }
+        <td width="80"></td>
+    </tr>
+    <tr>
+        <th>实际周期</th>
+        @foreach (var stageTask in stageTaskList.Skip(1))
+        {
+            <td align="center">@stageTask.String("factPeriods")天</td>
+        }
+        <td></td>
+    </tr>
+    <tr>
+        <th>偏差率</th>
+        @foreach (var stageTask in stageTaskList.Skip(1))
+        {
+            <td align="center">@stageTask.String("deviationRate")</td>
+        }
+        <td></td>
+    </tr>
+    <tr>
+        <th></th>
+        @foreach (var stageTask in stageTaskList)
+        {
+            <td>
+                <ul class="timeLine">
+                    <li class="clearfix top">
+                        <div class="point"></div>
+                        @if (stageTask != stageTaskList.LastOrDefault())
+                        {
+                            <div class="line"></div>
+                        }
+                    </li>
+                    <li class="bottom"><a class="ellipsis" style="width:170px;" title="@stageTask.String("name")">@stageTask.String("name")</a></li>
+                </ul>
+            </td>
+        }
+    </tr>
+</table>

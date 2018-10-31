@@ -1,0 +1,67 @@
+﻿@{
+
+    var form = ViewData["form"] as BsonDocument;
+    var headList = ViewData["headList"] as List<BsonDocument>;
+    var feildList = ViewData["feildList"] as List<BsonDocument>;
+    var rowMax = (int)ViewData["rowMax"];
+    var colMax = (int)ViewData["colMax"];
+    var index = 0;
+    var html = ViewData["html"] as HtmlString;
+}
+@if (headList.Count > 0 && feildList.Count > 0)
+{
+    <table class="table table-bordered">
+        <thead>
+            @for (int rowInd = 1; rowInd <= rowMax; rowInd++)
+                {
+                    var curHead = headList.Where(x => x.Int("nodeLevel") == rowInd).OrderBy(c => c.Int("headLevel")).ThenBy(c => c.String("nodeKey")).ToList();
+                    if (rowInd == 1)
+                    {
+                    <tr class="p-table_head">
+                        <td rowspan="@rowMax" colspan="@colMax">
+                            指标项
+                        </td>
+                        @foreach (var tempHead in curHead)
+                        {
+                            <td style="text-align: center" width="120" rowspan='@tempHead.Int("rowSpan")'
+                                colspan='@tempHead.Int("colSpan")' inputf='@tempHead.String("formatId")'>
+                                @tempHead.String("name")
+                            </td>
+                        }
+                    </tr>
+                }
+                else
+                {
+                    <tr class="p-table_head">
+                        @foreach (var tempHead in curHead)
+                        {
+                            <td style="text-align: center" width="120" colspan='@tempHead.Int("colSpan")'
+                                inputf='@tempHead.String("formatId")'>
+                                <div class="pr p-hoverShow">
+                                    @tempHead.String("name")
+                                    @if (tempHead.String("remark") != "")
+                            {
+                                        <div class="yh-popover fade bottom in p-hoverShow-itm" style="top: 25px; left: 0px; width:250px;">
+                                            <div class="arrow" style="left: 50px;">
+                                            </div>
+                                            <div class="yh-popover-content fn">
+                                                @tempHead.String("remark")
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+        </thead>
+        <tbody>
+            @html
+        </tbody>
+    </table>   
+}
+else
+{
+    <div>暂无数据</div>
+}

@@ -1,0 +1,46 @@
+﻿
+@{
+    var datas = ViewBag.datas as List<BsonDocument> ?? new List<BsonDocument>();
+    Layout = "";
+}
+
+
+@*<div class="panel panel-default">
+    <div class="panel-title bg-purple">
+        <h5 class="p-title2">分部分项修改统计表</h5>
+    </div>
+    <div class="table-responsive pre-scrollable" style="padding:10px; max-height:430px;">*@
+        <table class="table table-hover">
+            
+            <thead>
+                <tr>
+                    <th width="10%">工程类别</th>
+                    <th width="10%">项目编码</th>
+                    <th width="10%">分部分项</th>
+                    <th width="10%">指标名称</th>
+                    <th>项目特征</th>
+                    <th width="7%">修改次数</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var data in datas)
+                {
+                    <tr>
+                        <td>@data.Text("qdTypeName")</td>
+                        <td>@data.Text("modItemCode")</td>
+                        <td>@data.Text("sysItemDirName")</td>
+                        <td>@data.Text("modItemName")</td>
+                        <td>@data.Text("modItemChar")</td>
+                        <td>@data.Int("count")@*<a class="ml10" href='/Monitor/MonitorQDItemUpdateDetail?modItemId=@data.Int("modItemId")' target="_blank">详情...</a>*@</td>
+                    </tr>
+                }
+                @if (datas.Count == 0)
+                {
+                    <tr>
+                        <td colspan="5">暂无数据</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    @*</div>
+</div>*@

@@ -1,0 +1,31 @@
+﻿@{
+    Layout = "";
+    var module = ViewData["module"] as BsonDocument;
+    var updateQuery = "";
+    if (!module.IsNullOrEmpty())
+    {
+        updateQuery = "db.CustomerModule.distinct('_id',{'moduleId':'" + module.String("moduleId") + "'})";
+    }
+}
+<form>
+    <input type="hidden" name="tbName" value="CustomerModule" />
+    <input type="hidden" name="queryStr" value="@updateQuery" />
+    <table width="100%" class="table-noBorder">
+        <tr>
+            <td>
+                名称:
+            </td>
+            <td>
+                <input type="text" name="name" value="@module.String("name")" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                路径:
+            </td>
+            <td>
+                <input type="text" name="path" value="@module.String("path")" />
+            </td>
+        </tr>
+    </table>
+</form>

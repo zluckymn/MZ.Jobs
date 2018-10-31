@@ -1,0 +1,72 @@
+﻿@using MZ.BusinessLogicLayer.Business
+@{
+    ViewBag.Title = "PlatfromIndex";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+    var customerList = ViewData["customerList"] as List<BsonDocument>;
+    var returnUrl = ViewData["returnUrl"] as string;
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="clearfix">
+                    <h3 class="table-title">客户系统列表</h3>
+                    @{
+                        CustomerInfoBll customerInfoBll = CustomerInfoBll._();
+                        foreach (var customer in customerList)
+                        {
+                            var date = DateTime.Now;
+                            var isRun = customerInfoBll.IsRunning(customer);
+                            var str = isRun ? "正常运行" : "未运行";
+                            <div class="user-List" customerCode="@customer.String("customerCode")" onclick="ActionMonitor(this)">
+                                <div class="name p-f_white">
+                                    @customer.String("name")
+                                   @if (isRun==false)
+                                   {
+                                   @*灰色*@<span class="fa fa-chain-broken ml5 p-f_gray1" style="font-size: 16px;"></span>
+                                   }
+                                   else
+                                   {
+                                    @*绿色*@<span class="fa fa-check-circle ml5 p-f_green1" style="font-size: 16px;"></span>
+                                   }
+                                </div>
+                                <div class="p-f_white">服务状态：@str</div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    SetMenu(1);
+    function ActionMonitor(obj) {
+        var returnUrl = '@returnUrl';
+        var customerCode = $(obj).attr("customerCode");
+        $.ajax({
+            url: "/Home/GetSystemCodeSession",
+            type: 'post',
+            data: { customerCode: customerCode },
+            dataType: 'json',
+            error: function () {
+                layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+                //$.tmsg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { infotype: 2 });
+            },
+            success: function (data) {
+                if (data.Success == false) {
+                    layer.msg(data.Message, { icon: 5 });
+                    //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                }
+                else {
+                    if (returnUrl != "") {
+                        window.location.href = returnUrl;
+                    } else {
+                        window.location.href = "/Monitor/MonitorSystem";
+                    }
+                }
+            }
+        });
+    }
+</script>

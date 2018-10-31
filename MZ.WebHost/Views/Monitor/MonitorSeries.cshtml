@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "MonitorSeries";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+}
+
+<div class="p-title1">系列监控</div>
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        @{ Html.RenderAction("SubReportPSModIndUpdateChart");}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        @{ Html.RenderAction("PSModIndUpdateRankReport");}
+    </div>
+    <div class="col-md-6">
+       @{ Html.RenderAction("CustomerSensitiveUpdateDetailReport");}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @{ Html.RenderAction("LineModIndUpdateDetailsReport");}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @{ Html.RenderAction("ProjCIModIndUpdateDetailsReport");}
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @{ Html.RenderAction("ProjCIVersionUpdateCountReport");}
+    </div>
+</div>
+
+<script>
+    SetMenu(2, 2);
+</script>

@@ -1,0 +1,246 @@
+﻿@{
+    ViewBag.Title = "InitPageUrlManage";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+
+    var hasViewRight = true;
+    var hasUpdateRight = true;
+    List<BsonDocument> groupList = ViewData["groupList"] != null ? ViewData["groupList"] as List<BsonDocument> : new List<BsonDocument>();
+}
+@*<div class="p-pageInfoBlock">
+    <div class="">
+        <ul class="yh-breadcrumb">
+            <li><a href="javascript:;">系统设置</a><i>&gt;</i></li>
+            <li class="active">系统配置页管理</li>
+        </ul>
+    </div>
+</div>*@
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @if (hasViewRight)
+                {
+                    <a class="p-btn CS-J-block" @if (hasUpdateRight) { <text> onclick="addGroup(0)" </text>   } else { <text> yh-popover="暂无权限" </text>   } href="javascript:;">
+                        添加分组
+                    </a>
+
+                    <a class="p-btn p-btn_red CS-J-block" id="p-j-del" @if (hasUpdateRight) { <text> onclick="delGroup()" </text>   } else { <text> yh-popover="暂无权限" </text>   } @if (groupList.Count() == 0) { <text> style=" display:none;"</text>} href="javascript:;">
+                        删除分组
+                    </a>
+
+                    <a class="p-btn p-btn_green CS-J-block" id="p-j-edit" @if (hasUpdateRight) { <text> onclick="editGroup()" </text>   } else { <text> yh-popover="暂无权限" </text>   } @if (groupList.Count() == 0) { <text> style=" display:none;"</text>} href="javascript:;">
+                        编辑分组
+                    </a>
+
+                    <div class="p-tab_5 CS-J-block mt10" id="p-j-tempDiv" @if (groupList.Count() == 0) { <text>
+                         style="display: none;" </text>   }>
+                        <input id="curGroupId" type="hidden" value="" />
+                        <input id="curGroupName" type="hidden" value="" />
+                        <ul id="selectItemList">
+                            @foreach (var group in groupList)
+                {
+                                <li>
+                                    <a href="javascript:void(0);" onclick="changeGroupList(this)" data-groupId='@group.String("groupId")'>
+                                        @group.String("name")
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div id="p-j-IndTable">
+                        @if (groupList.Count() == 0)
+                {
+                            <div class="yh-msg">
+                                暂未创建任何分组信息！
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="yh-msg">
+                        暂无权限
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    SetMenu(4, 5);
+    function changeGroupList(obj) {
+        var $obj = $(obj);
+        var groupId = $obj.attr("data-groupId");
+        $("#curGroupId").val(groupId);
+        $("#curGroupName").val($.trim($obj.text()));
+        $obj.parent().addClass("select").siblings().removeClass("select");
+        var url = "/OperationPlatform/InitPageUrlManageList?groupId=" + groupId;
+        $("#p-j-IndTable").attr("lurl", url).load(url + "&r=" + Math.random());
+    }
+    $("#selectItemList").find("li:first").find("a").click();
+
+    function reloadGroupList() {
+        $("#selectItemList").find("li.select").find("a").click();
+    }
+
+    function addGroup(id) {
+        var url = "/OperationPlatform/PageUrlGroupEdit?groupId=" + id + "&r=" + Math.random();
+        var title = "新增分组";
+        if (id > 0) {
+            title = "编辑分组";
+        }
+        $.YH.box({
+            target: url,
+            title: title,
+            width: 350,
+            ok: function () {
+                var name = $(this).find("input[name=name]").val();
+                if (name == "") {
+                    alert("名称不能为空");
+                    return false;
+                }
+                var formData = $(this).find("form").serialize();
+                $.ajax({
+                    url: "/Home/SavePostInfo",
+                    type: 'post',
+                    data: formData,
+                    dataType: 'json',
+                    error: function () {
+                        layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+                        //$.tmsg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { infotype: 2 });
+                    },
+                    success: function (data) {
+                        if (data.Success == false) {
+                            layer.msg(data.Message, { icon: 5 });
+                            //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                        }
+                        else {
+                            layer.msg('保存成功！', { icon: 6 });
+                            //$.tmsg("m_jfw", "保存成功！", { infotype: 1, time_out: 500 });
+                            if ($("#selectItemList a[data-groupId=" + id + "]").length == 0) {//新增
+                                var $newLi = $('<li><a href="javascript:;" onclick="changeGroupList(this)" data-categoryId=""></a></li>');
+                                $newLi.find("a").html(data.htInfo.name);
+                                $newLi.find("a").attr("data-groupId", data.htInfo.groupId);
+                                $("#selectItemList").append($newLi);
+                                $("#selectItemList").find("a[data-groupId=" + data.htInfo.groupId + "]").click();
+                            } else {
+                                $("#selectItemList").find("a[data-groupId=" + id + "]").html(data.htInfo.name);
+                                $("#selectItemList").find("a[data-groupId=" + id + "]").click();
+                            }
+                        }
+                        checkAddOrDelete(0);
+                    }
+                });
+            }
+        })
+    }
+
+    function editGroup() {
+        addGroup($("#curGroupId").val());
+    }
+
+    function delGroup() {
+        var curGroupId = $("#curGroupId").val();
+        var curGroupName = $("#curGroupName").val();
+        if (!confirm("确定要删除分组[" + curGroupName + "]吗？")) {
+            return false;
+        }
+        $.ajax({
+            url: "/Home/DelePostInfo",
+            type: 'post',
+            data: {
+                tbName: "InitPageUrlGroup",
+                queryStr: "db.InitPageUrlGroup.distinct('_id',{'groupId':'" + curGroupId + "'})"
+            },
+            dataType: 'json',
+            error: function () {
+                layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+                //$.tmsg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { infotype: 2 });
+            },
+            success: function (data) {
+                if (data.Success == false) {
+                    layer.msg(data.Message, { icon: 5 });
+                    //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                }
+                else {
+                    layer.msg('删除成功！', { icon: 6 });
+                    //$.tmsg("m_jfw", "删除成功！", { infotype: 1, time_out: 500 });
+                    $("#selectItemList").find("a[data-groupId=" + curGroupId + "]").parent().remove();
+                    $("#selectItemList").find("a:last").click();
+                    checkAddOrDelete(1);
+                }
+            }
+        });
+    }
+
+    //删除和新增模板后，页面刷新效果,新增type=0，删除type=1
+    function checkAddOrDelete(type) {
+        var $del = $("#p-j-del");
+        var $edit = $("#p-j-edit");
+        var $synchronize = $("p-j-synchronize");
+        var $tempDiv = $("#p-j-tempDiv");
+        var tempCount = $("#selectItemList").find("a").length;
+        //显示隐藏按钮
+        if (tempCount > 0) {
+            $tempDiv.show();
+            $del.show();
+            $edit.show();
+            $synchronize.show();
+        } else {
+            $tempDiv.hide();
+            $del.hide();
+            $edit.hide();
+            $synchronize.hide();
+            if (type == 1) $("#p-j-IndTable").html('<div class="yh-msg yh-msg_block mt10">暂无模板，请新增</div>');
+        }
+    }
+
+    function urlEdit(id) {
+        var groupId = $("#curGroupId").val();
+        var url = "/OperationPlatform/PageUrlEdit?urlId=" + id + "&groupId=" + groupId + "&r=" + Math.random();
+        var title = "新增配置页";
+        if (id > 0) {
+            title = "编辑配置页";
+        }
+        $.YH.box({
+            target: url,
+            title: title,
+            width: 350,
+            ok: function () {
+                var name = $(this).find("input[name=name]").val();
+                var pageUrl = $(this).find("input[name=pageUrl]").val();
+                if (name == "") {
+                    alert("名称不能为空");
+                    return false;
+                }
+                if (pageUrl == "") {
+                    alert("配置页地址不能为空");
+                    return false;
+                }
+                var formData = $(this).find("form").serialize();
+                $.ajax({
+                    url: "/Home/SavePostInfo",
+                    type: 'post',
+                    data: formData,
+                    dataType: 'json',
+                    error: function () {
+                        layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+                        //$.tmsg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { infotype: 2 });
+                    },
+                    success: function (data) {
+                        if (data.Success == false) {
+                            layer.msg(data.Message, { icon: 5 });
+                            //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                        }
+                        else {
+                            layer.msg("保存成功！", { icon: 6 });
+                            //$.tmsg("m_jfw", "保存成功！", { infotype: 1, time_out: 500 });
+                            reloadGroupList();
+                        }
+                    }
+                });
+            }
+        })
+    }
+    </script>

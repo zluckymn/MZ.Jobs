@@ -1,0 +1,268 @@
+﻿@using MZ.BusinessLogicLayer.Business
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    @*<link href="/Content/css/common/common.css" rel="stylesheet" type="text/css" />
+        <link href="/Content/css/common/yh-icon.css" rel="stylesheet" type="text/css" />
+        <link href="/Content/css/common/yinhoo.css" rel="stylesheet" type="text/css" />*@
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    @*<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">*@
+    @*<link href="/Content/css/YYJK.css" rel="stylesheet" type="text/css" />*@
+    <link href="/Content/css/YYJK1.css" rel="stylesheet" type="text/css" />
+    <link href="/Scripts/YHBox/jquery-ui-1.9.2.custom.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/css/common/tmsg_common.min.css" rel="stylesheet" type="text/css" />
+    @*<script src="/Scripts/jquery-2.1.4.min.js" type="text/javascript"></script>*@
+    <script src="/Scripts/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="/Scripts/YHBox/livequery.js" type="text/javascript"></script>
+    <script src="/Scripts/YHBox/jquery-ui-1.9.2.custom.js" type="text/javascript"></script>
+    <script src="/Scripts/YHBox/jquery.yinhoo.js" type="text/javascript"></script>
+    <script src="/Scripts/Common/CommonFunc.js" type="text/javascript"></script>
+    <script src="/Scripts/Common/YH.js" type="text/javascript"></script>
+    <script src="/Scripts/datePicker-4.8/WdatePicker.js"></script>
+    <script src="~/Scripts/YHMaskInfo/maskInfo.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/Scripts/bootstrap.min.js"></script>
+    @*<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>*@
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.css">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
+    <!-- Latest compiled and minified Locales -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.1/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script src="~/Scripts/layer-v3.1.0/layer/layer.js"></script>
+    <!-- 图表框架 -->
+    <script src="~/Scripts/echarts/echarts.common.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/plugin/raphael-min.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery.cookie.js"></script>
+    <!-- MTT飞象 -->
+    @*<script src="/Scripts/Reference/jquery-1.7.2.min.js" type="text/javascript"></script>*@
+    <script src="~/Scripts/bundle/zy.bundle.js" type="text/javascript"></script>
+    <script src="~/Scripts/signalr/json2.min.js"></script>
+    <script src="~/Scripts/signalr/jquery.signalR-1.2.2.min.js"></script>
+    <script src="~/Scripts/signalr/hubs.js"></script>
+    <script src="~/Scripts/NewFileCommon.js"></script>
+    <style>
+        .p-j-selectMode li {
+            display: block;
+        }
+
+        .p-j-none {
+            display: none;
+        }
+
+        .p-j-selectMode {
+            background-color: #fff;
+            padding: 5px;
+            border: 1px solid #ddd;
+            max-height: 300px;
+            overflow: auto;
+        }
+    </style>
+</head>
+@{
+    var dataOp = new DataOperation();
+    var userId = dataOp.GetCurrentUserId();
+    var user = dataOp.FindOneByQuery("SysUser", Query.EQ("userId", userId.ToString()));
+    var customerCode = Session["CustomerCode"] == null ? "" : Session["CustomerCode"].ToString();
+    var customer = dataOp.FindOneByQuery("CustomerInfo", Query.EQ("customerCode", customerCode));
+    var allCustomerList = dataOp.FindAllByQuery("CustomerInfo", Query.NE("status", "2")).ToList();
+    var returnUrl = PageReq.GetString("returnUrl");
+    CustomerInfoBll customerInfoBll = CustomerInfoBll._();
+    var curIsRun = customerInfoBll.IsRunning(customer);
+    //MTT部分
+    var MTTRejectTypes = Yinhe.ProcessingCenter.SysAppConfig.MttTypeRejectFilter;
+    var MasterServerAddress = Yinhe.ProcessingCenter.SysAppConfig.MasterServerAddress;
+    var bizGuid = Yinhe.ProcessingCenter.SysAppConfig.bizGuid;
+    }
+<body>
+    <div class="p-header">
+        <div class="header-logo"><img alt="" src="../../Content/images/logo2.png?1=2" /></div>
+        <div class="top">
+            <div class="top-left">
+                <a href="javascript:;" class="fa fa-bars p-j-toggleSide"></a>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="p-j-selectWord"></span> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" id="dpCustomer">
+                        @foreach (var _customerCode in allCustomerList)
+                        {
+                            var isRun = customerInfoBll.IsRunning(_customerCode);
+                            var isSelected = customerCode == _customerCode.String("customerCode");
+                            var show = isSelected ? "active" : "";
+                            <li class="@show">
+                                <a customerCode="@_customerCode.String("customerCode")" onclick="CommonActionMonitor(this)">
+                                    @if (isRun==false)
+                                    {
+                                         @*灰色*@<span class="fa fa-circle mr10 p-f_gray1" style="font-size: 14px;"></span>
+                                    }
+                                    else
+                                    {
+                                        @*绿色*@<span class="fa fa-circle mr10 p-f_green1" style="font-size: 14px;"></span>
+                                    }@_customerCode.String("name")
+                                </a>
+                                
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <ul class="top-right clearfix">
+                <li><a class="fa fa-search"></a></li>
+                <li><a class="fa fa-warning"></a></li>
+                <li><a class="fa fa-cog"></a></li>
+                <li class="portrait"><img src="../../Content/images/user.png" /><a>@user.String("name")</a></li>
+                <li><a class="fa fa-power-off" onclick="Logoff();"></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="p-sidebar">
+       
+        <ul class="menu-list p-j-toggleMenu">
+            <li level="1" first="1" url="/OperationPlatform/PlatfromIndex" onclick="LoadfunView(this)">
+                <h3><i class="fa fa-home" style="font-size:20px;"></i><a href="javascript:;">首页</a>@*<i class="fa fa-caret-right p-j-toggleIcon"></i>*@</h3>
+            </li>
+            <li level="1" first="3">
+                <h3>
+                    <i class="fa fa-desktop"></i><a href="javascript:;">分布服务监控</a><i class="fa fa-caret-right p-j-toggleIcon"></i>
+                </h3>
+                <ul class="menu-second" style="display: none;">
+                    <li level="2" second="1" url="/SystemMonitor/QueueStatus" onclick="LoadfunView(this)"><a href="javascript:;">队列状态</a></li>
+                    <li level="2" second="2" url="/SystemMonitor/ConsumeException" onclick="LoadfunView(this)"><a href="javascript:;">异常监控</a></li>
+                    <li level="2" second="3" url="/SystemMonitor/QueueServerStatus" onclick="LoadfunView(this)"><a href="javascript:;">MQ服务状态</a></li>
+                    <li level="2" second="4" url="/SystemMonitor/MoreSystem" onclick="LoadfunView(this)"><a href="javascript:;">系统运维工具</a></li>
+                </ul>
+            </li>
+            <li level="1" first="2" >
+                <h3><i class="fa fa-users"></i><a href="javascript:;">客户监控</a><i class="fa fa-caret-right p-j-toggleIcon"></i></h3>
+                <ul class="menu-second" style="display:none;">
+                    <li level="2" second="1" url="/Monitor/MonitorSystem" onclick="LoadfunView(this)"><a href="javascript:;">系统监控</a></li>
+                    @*<li level="2" second="5"><a>监控</a></li>*@
+                </ul>
+            </li>
+            @*<li level="1" first="3">
+                <h3><i class="fa fa-tasks"></i><a href="javascript:;">服务器监控</a><i class="fa fa-caret-right p-j-toggleIcon"></i></h3>
+            </li>*@
+            <li level="1" first="4">
+                <h3><i class="fa fa-cog" style="font-size:18px;"></i><a href="javascript:;">设置</a><i class="fa fa-caret-right p-j-toggleIcon"></i></h3>
+                <ul class="menu-second" style="display:none;">
+                    <li level="2" second="1" url="/OperationPlatform/CustomerIndex" onclick="LoadfunView(this)"><a href="javascript:;" >客户设置</a></li>
+                    @*<li level="2" second="7" url="/OperationPlatform/StatementIndex" onclick="LoadfunView(this)"><a href="javascript:;">报表设置</a></li>*@
+                    <li level="2" second="6" url="/OperationPlatform/BackgroundJobIndex" onclick="LoadfunView(this)"><a href="javascript:;">调度事务设置</a></li>
+                    <li level="2" second="9" url="/OperationPlatform/BackgroundJobLogIndex" onclick="LoadfunView(this)"><a href="javascript:;">调度事务日志</a></li>
+                    @*<li level="2" second="8" url="/OperationPlatform/StatementLibIndex" onclick="LoadfunView(this)"><a href="javascript:;">规则设置</a></li>*@
+                    @*<li level="2" second="5" url="/OperationPlatform/InitPageUrlManage" onclick="LoadfunView(this)"><a href="javascript:;">系统配置页设置</a></li>*@
+                    <li level="2" second="2" url="/OperationPlatform/ServerIndex" onclick="LoadfunView(this)"><a href="javascript:;">服务器设置</a></li>
+                    <li level="2" second="3" url="/OperationPlatform/DataBaseIndex" onclick="LoadfunView(this)"><a href="javascript:;">数据库设置</a></li>
+                    @*<li level="2" second="4"><a href="/OperationPlatform/SiteInfoIndex">站点设置</a></li>*@
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <script>
+        var mttRejectTypes = '@MTTRejectTypes';
+        var masterAddress = '@MasterServerAddress';
+        var bizGuid = '@bizGuid';
+        function SetMenu(first, second) {
+            var menuContent = $('.p-sidebar'), firstMenu = menuContent.find('li[first=' + first + ']');
+            firstMenu.addClass('active');
+            if (second) {
+                firstMenu.find('li[second=' + second + ']').addClass('active');
+            }
+            firstMenu.find('.p-j-toggleIcon').click();
+        }
+        function LoadfunView(obj) {
+            var url = $(obj).attr("url");
+            window.location.href = url;
+        }
+        function Logoff() {
+            window.location.href = "/Account/Logout";
+        }
+
+        function CommonActionMonitor(obj) {
+            var customerCode = $(obj).attr("customerCode");
+            $.ajax({
+                url: "/Home/GetSystemCodeSession",
+                type: 'post',
+                data: { customerCode: customerCode },
+                dataType: 'json',
+                error: function () {
+                    layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+                    //$.tmsg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { infotype: 2 });
+                },
+                success: function (data) {
+                    if (data.Success == false) {
+                        layer.msg(data.Message, { icon: 5 });
+                        //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                    }
+                    else {
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+        // 收折二级菜单
+        $('.p-j-toggleMenu').on('click', 'li[level=1]', function (e) {
+            var self = $(this);
+            self.siblings().each(function () { // 手风琴效果
+                var content = $(this).find('h3');
+                if (content.find('.fa-caret-down').length > 0) {
+                    content.find('.p-j-toggleIcon').toggleClass('fa-caret-down fa-caret-right');
+                    $(this).find('.menu-second').slideUp();
+                }
+            });
+            if ($(e.target).closest('li[level=2]').length==0) {
+                self.find('ul').slideToggle(function () {
+                    if (self.find('ul').is(':visible')) {
+                        self.find('.p-j-toggleIcon').removeClass('fa-caret-right').addClass('fa-caret-down');
+                    } else {
+                        self.find('.p-j-toggleIcon').removeClass('fa-caret-down').addClass('fa-caret-right');
+                    }
+                });
+            }
+        });
+        // 收折侧边栏
+        $('.p-j-toggleSide').on('click', function () {
+            var side = $('.p-sidebar'), content = $('.p-content'), self = $(this), header = $('.p-header');
+            if (self.attr('state') == 'show') { //默认就是 展开
+                side.show();
+                content.css('margin-left', '220px');
+                self.attr('state', 'hide');
+                header.find('.header-logo').show();
+                header.find('.top').css('left', '220px');
+                header.find('.top-right').css('margin-right', '240px');
+            } else { //展开
+                content.css('margin-left', 0);
+                self.attr('state', 'show');
+                side.hide();
+                header.find('.header-logo').hide();
+                header.find('.top').css('left', 0);
+                header.find('.top-right').css('margin-right', '20px');
+            }
+        });
+
+        $('.p-j-toggleProj').on('click', function () {
+            var self = $(this);
+            var target = $('.p-j-projList');
+            target.toggleClass('p-j-selectMode');
+        });
+
+        $(document).on('click', function (e) {
+            var target = $(e.target);
+            if (target.closest('.p-j-projList').length == 0 && $('.p-j-selectMode').length > 0 && target.closest('.p-j-toggleProj').length==0) {
+                $('.p-j-toggleProj').click();
+            }
+        });
+
+        $(document).ready(function () {
+            $('.p-j-selectWord').text($.trim($('#dpCustomer').find('.active').eq(0).text()));
+        })
+    </script>
+    <div class="p-content">
+        @RenderBody()
+    </div>
+</body>
+</html>

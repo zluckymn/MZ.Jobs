@@ -1,0 +1,19 @@
+﻿@{
+    Layout = "";
+    var groupInfo = ViewData["groupInfo"] != null ? ViewData["groupInfo"] as BsonDocument : null;
+    var queryStr = ViewData["queryStr"] as string;    
+}
+<form>
+<input type="hidden" name="tbName" value="InitPageUrlGroup" />
+<input type="hidden" name="queryStr" value="@queryStr" />
+<table class="p-table m10">
+    <tr>
+        <td width="72">
+            名称:
+        </td>
+        <td>
+            <input class="p-inputborder" type="text" name="name" value="@groupInfo.String("name")" />
+        </td>
+    </tr>
+</table>
+</form>

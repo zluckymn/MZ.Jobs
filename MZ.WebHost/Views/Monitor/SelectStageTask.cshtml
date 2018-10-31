@@ -1,0 +1,44 @@
+﻿@{ 
+    var projTaskList = ViewData["projTaskList"] as List<BsonDocument>;
+    var stageTaskList = ViewData["stageTaskList"] as List<BsonDocument>;
+}
+<style>
+    .selectTask li{padding:2px;}
+    .level1{ background-color:#ddd; padding:2px 5px; font-weight:bold;}
+    .level1 a{color:#666;}
+</style>
+<div>
+    <ul style="max-height:300px; overflow-y:auto;" class="selectTask">
+        @foreach (var projTask in projTaskList)
+        {
+            var nodeLevel = projTask.String("nodekey").Split('.').Count();
+            var pedLeft = 10 * (nodeLevel - 1);
+            if (nodeLevel == 1)
+            {
+                continue;
+            }
+            <li @if (nodeLevel == 2) { <text> class="level1" </text> } taskName='@projTask.String("name")' nodeKey="@projTask.String("nodekey")" onclick="selectTask(this)">
+                <div class="yh-level_01"></div><span style="padding-left:@(pedLeft)px"><a href="javascript:;">@projTask.String("name")</a></span>
+            </li>
+        }
+    </ul>
+    <ul id="selectTask" class="clearfix" style="margin-top:5px; padding-top:5px; border-top:1px dotted #aaa;">
+        @foreach (var stageTask in stageTaskList)
+        {
+            <li taskName='@stageTask.String("name")' nodeKey="@stageTask.String("nodekey")" class="fl inline-block" style="margin-right:20px;">
+                @stageTask.String("name")<a href="javascript:;" onclick="delLi(this);" class="p-f_red fa fa-close ml5"></a>
+            </li>
+        }
+    </ul>
+</div>
+<script>
+    function selectTask(obj)
+    {
+        var html = '<li taskName="' + $(obj).attr("taskName") + '" nodeKey="'+$(obj).attr("nodekey")+'">';
+        html += $(obj).attr("taskName") + '<a href="javascript:;" onclick="delLi(this);">删除</a></li>';
+        $("#selectTask").append(html);
+    }
+    function delLi(obj) {
+        $(obj).closest("li").remove();
+    }
+</script>

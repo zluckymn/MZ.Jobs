@@ -1,0 +1,62 @@
+﻿@{ 
+    Layout = "";
+    var meetingStatusList = ViewData["meetingStatusList"] as List<BsonDocument>;
+    var index = 0;
+}
+@if (meetingStatusList.Count > 0)
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>序号</th>
+                <th>会议类型</th>
+                <th>上会准备（尚未发起流程）</th>
+                <th>上会审批流程中</th>
+                <th>会议通知阶段</th>
+                <th>会议进行中</th>
+                <th>会议决策评分完成（会议决策评分完后，还没有点结束会议）</th>
+                <th>会议备案阶段（尚未发起备案流程）</th>
+                <th>会议完成（备案流程完成）</th>
+            </tr>
+        </thead>
+        @foreach (var meetingStatus in meetingStatusList)
+        {
+            <tr>
+                <td>
+                    @(++index)
+                </td>
+                <td>
+                    @meetingStatus.String("name")
+                </td>
+                <td>
+                    @meetingStatus.String("startCount")
+                </td>
+                <td>
+                    @meetingStatus.String("startFlowCount")
+                </td>
+                <td>
+                    @meetingStatus.String("startMessageCount")
+                </td>
+                <td>
+                    @meetingStatus.String("startMeetingCount")
+                </td>
+                <td>
+                   @meetingStatus.String("endMeetingCount")
+                </td>
+                <td>
+                    @meetingStatus.String("recordMeetingCount")
+                </td>
+                <td>
+                    @meetingStatus.String("endCount")
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div>
+        暂无数据！
+    </div>
+}
+

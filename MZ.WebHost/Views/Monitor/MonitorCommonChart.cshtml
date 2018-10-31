@@ -1,0 +1,100 @@
+﻿@{
+    var type = ViewData["type"] as string;
+    var path = ViewData["path"] as string;
+ }
+<div style="height: 175px;margin-top: 15px;" id="chart">
+
+</div>
+<script>
+    laodChart();
+    function laodChart() {
+        var xArr = [];
+        var yArr = [];
+        $.ajax({
+            url: '@path',
+            type: 'post',
+            async: false,
+            error: function () {
+                layer.msg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+            },
+            data: formData,
+            success: function (data) {
+                if (data.Success) {
+                    var xlist = data.htInfo.xlist;
+                    var ylist = data.htInfo.ylist;
+                    xArr = xlist.split(',');
+                    yArr = ylist.split(',');
+                    //layer.msg('保存成功！', { icon: 6 });
+                }
+                else {
+                    layer.msg(data.Message, { icon: 5 });
+                }
+            }
+        });
+        var myChart = echarts.init(document.getElementById('chart'));
+        option = {
+            tooltip: {
+                trigger: 'axis'
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                top: '4%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: xArr,//['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                axisLabel: {
+                    show: true,
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: '#fff',
+                        width: 2
+                    }
+                }
+            },
+            yAxis: {
+                type: 'value',
+                axisLabel: {
+                    show: true,
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: '#fff',
+                        width: 2
+                    }
+                }
+            },
+            series: [
+                {
+                    name: '部门访问',
+                    type: 'line',
+                    stack: '总量',
+                    itemStyle: {
+                        normal: {
+                            lineStyle: {
+                                color: '#FFFFFF'
+                            }
+                        }
+                    },
+                    data: yArr //[120, 132, 101, 134, 90, 230, 210]
+                }
+            ]
+        };
+        myChart.setOption(option);
+        /**
+        * 切换时 只需重新请求给option 赋值即可
+        */
+    }
+    
+</script>

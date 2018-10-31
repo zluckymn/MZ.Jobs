@@ -1,0 +1,126 @@
+﻿
+@{
+    ViewBag.Title = "BigDataInfo";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+
+    var statusCategoryList = ViewData["statusCategoryList"] as List<BsonDocument>;
+    var cityStatusCategoryList = ViewData["cityStatusCategoryList"] as List<BsonDocument>;
+    var bigDataBll = BusinessLogicLayer.Business.BigDataBll._();
+}
+<div class="p-title1">城市大数据汇总情况</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div>
+                    <div class="mb10 pb10 bb">
+                        <ul class="nav nav-pills">
+                        @{
+                            var firstCat = statusCategoryList.FirstOrDefault() ?? new BsonDocument();
+                            foreach (var statsuCat in statusCategoryList)
+                            {
+                                var className = String.Empty;
+                                if (firstCat.Text("catId") == statsuCat.Text("catId")) { className = "active"; }
+                            <li name="catList" id="catList_@statsuCat.Text("catId")" class="@className" onclick='LoadCatDetail(@statsuCat.Text("catId"),this)' catId="@statsuCat.Text("catId")"style="cursor:pointer">
+                                <a>@statsuCat.Text("name")</a>
+                            </li>
+                            }
+                        }
+                        </ul>
+                    </div>
+                    <div>
+                        @foreach (var statsuCat in statusCategoryList)
+                        {
+                        var typeSettingDoc=bigDataBll.GetTextTypesetting(statsuCat.Text("status"));
+                        <div id='catDetail_@statsuCat.Text("catId")' style="display:none">
+                            <ol class="breadcrumb" style="margin-left:0; margin-bottom:10px; background-color:#f0f0f0;">
+                                <li><a href="#" class="fb">数据来源</a></li>
+                                <li class="active">@statsuCat.Text("source")</li>
+                            </ol>
+                            <!--<div class="fr">
+                                <span class="label label-success">区楼盘详细信息</span>
+                                <span class="label label-success">地区楼盘售价趋势</span>
+                            </div>-->
+                            <table class="table-noBorder" style="width:100%;">
+                               
+                                    @if(typeSettingDoc.ElementCount>0){
+                                    foreach(var elem in typeSettingDoc){
+                                <tr>
+                                    <td width="140" class="p-f_gray">@elem.Name：</td>
+                                    <td class="p-f_green fb">@typeSettingDoc.Text(elem.Name)</td>
+                                </tr>
+                                    }
+                                    }else{
+                                <tr>
+                                    <td colspan="8">
+                                        @statsuCat.Text("status")
+                                    </td>
+                                </tr>
+                                    }
+
+</table>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div>
+                    <div class="mb10 pb10 bb">
+                        <ul class="nav nav-pills p-j-loadCityDetail">
+                        @{ foreach (var cityCat in cityStatusCategoryList)
+                            {
+                              <li><a catId="@cityCat.Text("catId")" relCatId="@cityCat.Text("relCatId")">@cityCat.Text("name")</a></li>
+                            }
+                        }
+                        </ul>
+                    </div>
+                    <div class="table-responsive pre-scrollable" id="p-j-loadContent" style="max-height:395px; height:auto;">
+                        @* 页面控件加载地址 /Monitor/BigDataCityCatDetail/?catId=catId*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    SetMenu(2, 1);
+    // 加载底部表格
+    $('.p-j-loadCityDetail').on('click', 'li', function () {
+        var self = $(this), catId = self.find("a").attr('catId');
+        self.addClass('active').siblings().removeClass('active');
+        $('#p-j-loadContent').load('/Monitor/BigDataCityCatDetail/?catId=' + catId + "&r=" + Math.random(), function () {
+            var tbody = $(this).find('.p-j-splitTable').find('tbody'); trs = tbody.find('td');
+            var trStr = "<tr>";
+            trs.each(function (index, item) {
+                trStr += $(this).prop("outerHTML");
+                if ((index + 1) % 9 == 0) {
+                    trStr += "</tr>";
+                    tbody.append(trStr);
+                    trStr = "<tr>";
+                } else if (index + 1 == trs.length) { //最后一个而且整除不等于三的
+                    var cols = 9 - ((index + 1) % 9);
+                    trStr += '<td colspan="' + cols + '"></td></tr>';
+                    tbody.append(trStr);
+                }
+            });
+            trs.remove();
+        });
+    }).find('li:first').trigger('click');
+
+    LoadCatDetail('@firstCat.Text("catId")');
+    function LoadCatDetail(catId,obj) {
+        $(obj).addClass('active').siblings().removeClass('active');
+        var detailId = "#catDetail_" +catId;
+        $(detailId).show().siblings().hide();
+        $('.p-j-loadCityDetail').find("li").find("a[relCatId='" + catId + "']").click();
+    }
+   
+</script>

@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = "DataBaseIndex";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+    var customerList = ViewData["customerList"] as List<BsonDocument>;
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="mb10 pb10 bb">
+                    <ul id="selectList" class="nav nav-pills">
+                        @if (customerList.Count > 0)
+                        {
+                            var MZInfo = customerList.FirstOrDefault(t => t.String("name") == "蒙正内部");
+                            <li code='@MZInfo.String("customerCode")' onclick="LoadList(this)"><a href="javascript:void(0);">@MZInfo.String("name")</a></li>
+                            foreach (var customer in customerList.Where(t => t.String("name") != "蒙正内部").ToList())
+                            {
+                                <li code='@customer.String("customerCode")' onclick="LoadList(this)"><a href="javascript:void(0);">@customer.String("name")</a></li>
+                            }
+                        }
+                    </ul>
+                </div>
+                <div id="dataBaseList">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="Decryption" style="display:none">
+    解码密码：<input name="secretkey" type="text" />
+</div>
+<script>
+    SetMenu(4, 3);
+    //LoadList();
+    $("#selectList").find("li").first().click();
+    function LoadList(obj) {
+        var customerCode = $(obj).attr("code");
+        $("#selectList").find("li.active").removeClass("active");
+        $(obj).addClass("active");
+        $("#dataBaseList").load("/OperationPlatform/DataBaseList?customerCode=" + customerCode + "&r=" + Math.random());
+    }
+    function reload() {
+        $("#selectList").find("li.active").click();
+    }
+    function EditDataBase(id,customerCode) {
+        var title = "数据库信息创建";
+        if (id != 0 && id != "0") {
+            title = "数据库信息编辑";
+        }
+        $.YH.box({
+            target: '/OperationPlatform/DataBaseEdit?dataBaseId=' + id + "&customerCode=" + customerCode + "&r=" + Math.random(),
+            title: title,
+            width: 360,
+            ok: function () {
+                var formData = $(this).find("form").serialize();
+                var encodeColumns = "account,password";
+                $.ajax({
+                    url: "/Home/SavePostInfoEncode",
+                    type: 'post',
+                    error: function () {
+                        layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+                        //$.tmsg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { infotype: 2 });
+                    },
+                    data: formData + "&encodeColumns=" + encodeColumns,
+                    success: function (data) {
+                        if (data.Success) {
+                            layer.msg('保存成功！', { icon: 6 });
+                            //$.tmsg("m_jfw", "保存成功！", { infotype: 1 });
+                            //LoadList();
+                            reload();
+                        }
+                        else {
+                            layer.msg(data.Message, { icon: 5 });
+                            //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                        }
+                    }
+                });
+            }
+        });
+    }
+    function Decryption() {
+        $.YH.box({
+            target: $("#Decryption"),
+            title: "解密编码",
+            width: 350,
+            ok: function () {
+                var secretkey = $(this).find("input[name=secretkey]").val();
+                var customerCode = $("#selectList").find("li.active").attr("code");
+                $("#dataBaseList").load("/OperationPlatform/DataBaseList?customerCode=" + customerCode + "&secretkey=" + secretkey + "&r=" + Math.random());
+            }
+        });
+    }
+</script>

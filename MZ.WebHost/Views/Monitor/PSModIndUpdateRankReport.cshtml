@@ -1,0 +1,71 @@
+﻿
+@{
+    var datas = ViewBag.datas as List<BsonDocument> ?? new List<BsonDocument>();
+    var headers = ViewBag.headers as List<BsonDocument> ?? new List<BsonDocument>();
+}
+
+
+<div class="panel panel-default">
+    <div class="panel-title bg-green">
+        <h5 class="p-title2">模块指标修正排行</h5>
+    </div>
+    <div class="table-responsive pre-scrollable" style="padding:10px; max-height:430px;">
+        <table class="table table-hover">
+			<colgroup  >
+					<col width="10%"/>
+					<col width="20%"/>
+					<col width="15%"/>
+					<col width="15%"/>
+					<col width="20%"/>
+					<col width="20%"/>					
+            </colgroup>
+            <thead>				
+                <tr>
+                    @foreach (var header in headers)
+                    {
+                            
+                        <th>@header.Text("name")</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var data in datas)
+                {
+                    <tr>
+                        @foreach (var header in headers)
+                        {
+                            var field = header.Text("field");
+                            var index=data.Int("index");
+                            string bgClass=(index==1?"bg-red rank":index==2?"bg-blue rank":index==3?"bg-green rank":"bg-gray1 rank");
+                            if (field == "index")
+                            {
+                                <td><a class="@bgClass">@index</a></td>
+                            }
+                            else if (field == "indCount")
+                            {
+                            <td class="td_progress">
+                                <span>@data.Int("indCount")</span>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="@data.Int("percent")" aria-valuemin="0" aria-valuemax="100" style="width: @data.Int("percent")%">
+                                        <span class="sr-only">@data.Int("percent")% Complete (info)</span>
+                                    </div>
+                                </div>
+                            </td>
+                            }
+                            else
+                            {
+                                <td>@data.Text(field)</td>
+                            }
+                        }
+                    </tr>
+                }
+                @if (datas.Count == 0) {
+                    <tr>
+                        <td colspan="@headers.Count">暂无数据</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

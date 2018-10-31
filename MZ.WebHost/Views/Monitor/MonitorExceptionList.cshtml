@@ -1,0 +1,29 @@
+﻿@{ 
+    var module = ViewData["module"] as BsonDocument;
+    var exceptionLogList = ViewData["exceptionLogList"] as List<BsonDocument>;
+}
+<h4>@module.String("name")</h4>
+<ul class="pre-scrollable" style="padding-right:10px; overflow-x:hidden; height:340px;">
+    @if (exceptionLogList.Count > 0)
+    {
+        foreach (var exceptionLog in exceptionLogList)
+        {
+            var url = exceptionLog.String("orininalString"); //exceptionLog.String("hostDomain") + "/" + exceptionLog.String("requestUrl");
+            var message = exceptionLog.String("errorMessage").Length > 50 ? exceptionLog.String("errorMessage").Substring(0, 50) : exceptionLog.String("errorMessage");
+            <li>
+                <p>@message</p>
+                <p><a href="@url" target="_blank">@url</a></p>
+                <p class="p-f_gray">@exceptionLog.String("date")</p>
+            </li>
+        }
+        @*<li>
+                <p>1、问题描述问题描述问题描述问题描述问题描述问题描述问题描述问题描述问题描述...</p>
+                <p><a href="http://www.baidu.com" target="_blank">http://www.baidu.com</a></p>
+                <p class="p-f_gray">2017-1-11&nbsp;&nbsp;&nbsp;17:11:30</p>
+            </li>*@
+    }
+    else {
+        <li class="yh-msg" style="border:none; background-color:#dfdfdf !important;">暂无异常</li>
+    }
+
+</ul>

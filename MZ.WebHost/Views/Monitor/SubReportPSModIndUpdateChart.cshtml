@@ -1,0 +1,31 @@
+﻿
+@{
+    
+}
+<div class="panel panel-default">
+    <div class="panel-title bg-blue">
+        <h5 class="p-title2">模块指标修正统计</h5>
+    </div>
+    <div class="panel-body" style="height:300px;">
+        <div id="baseSysModuleData" style="width: 100%;height:290px;"></div>
+    </div>
+</div>
+
+<script>
+    var myChart = echarts.init(document.getElementById('baseSysModuleData'));
+    var option = {};
+    $.ajax({
+        url: "/Monitor/SubReportPSModIndUpdateChartJson",
+        type: 'post',
+        error: function () {
+            layer.msg('未知错误，请联系服务器管理员，或者刷新页面重试!', { icon: 5 });
+        },
+        data: {
+        },
+        success: function (data) {
+            option = eval('(' + data + ')');
+            myChart.setOption(option);
+        }
+    });
+</script>
+

@@ -1,0 +1,94 @@
+﻿@{
+    Layout = "";
+    var actionList = ViewData["actionList"] as List<BsonDocument>;
+    var moduleList = ViewData["moduleList"] as List<BsonDocument>;
+    var module = ViewData["module"] as BsonDocument;
+    var moduleId = (int)ViewData["moduleId"];
+    var startStr = ViewData["startStr"] as string;
+    var endStr = ViewData["endStr"] as string;
+    var index = 0;
+}
+
+<div class="panel panel-default">
+    <div class="panel-title bg-purple">
+        <div class="clearfix">
+            <h5 class="p-title2 fl">访问操作访问频度排行</h5>
+            <div class="date-picker">
+                <i class="fa fa-calendar"></i><input type="text" id="startDate2" value="@startStr" onclick="WdatePicker()" onchange="LoadModules(@moduleId)" />&nbsp;-&nbsp;&nbsp;
+                <i class="fa fa-calendar"></i><input type="text" id="endDate2" value="@endStr" onclick="WdatePicker()" onchange="LoadModules(@moduleId)" />
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive pre-scrollable" style="padding:10px; height:395px;">
+        @if (moduleList.Count > 0)
+        {
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>名次</th>
+                    <th>
+                        <div class="dropdown">
+                            <button style="" class="btn btn-user btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @if (moduleId == 0)
+                                {
+                                    <text>全部模块</text>
+                                }
+                                else
+                                {
+                                    <text>@module.String("name")</text>
+                                }
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <li onclick='LoadModules(0)'><a href="javascript:;">全部模块</a></li>
+                                @foreach (var modules in moduleList)
+                                {
+                                   <li onclick='LoadModules(@modules.String("moduleId"))'><a href="javascript:;">@modules.String("name")</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </th>
+                    @*<th>页面或操作</th>*@
+                    <th>访问次数</th>
+                </tr>
+            </thead>
+            @foreach (var action in actionList)
+            {
+                index++;
+                var className = "";
+                switch (index)
+                {
+                    case 1:
+                        className = "bg-red";
+                        break;
+                    case 2:
+                        className = "bg-blue";
+                        break;
+                    case 3:
+                        className = "bg-green";
+                        break;
+                    default:
+                        className = "bg-gray1";
+                        break;
+                }
+                <tr>
+                    <td><a class='@className rank'>@index</a></td>
+                    <td>@action.String("name")</td>
+                    @*<td>首页</td>*@
+                    <td class="td_progress">
+                        <span>@action.String("actionCount")</span>
+                        @*<div class="progress">
+                            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+                                <span class="sr-only">80% Complete (info)</span>
+                            </div>
+                        </div>*@
+                    </td>
+                </tr>
+            }
+        </table>
+        }
+        else {
+            <div>暂无数据</div>
+        }
+    </div>
+</div>

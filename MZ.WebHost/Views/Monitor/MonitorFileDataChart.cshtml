@@ -1,0 +1,112 @@
+﻿@{ 
+    Layout = "";
+    var type = (int)ViewData["type"];
+    var xlist = ViewData["xlist"] as string;
+    var ylist1 = ViewData["ylist1"] as string;
+    var ylist2 = ViewData["ylist2"] as string;
+    var ylist3 = ViewData["ylist3"] as string;
+    var ylist4 = ViewData["ylist4"] as string;
+    var ylist5 = ViewData["ylist5"] as string;
+}
+<div id="chartView">
+    <div class="p-tab_time" style="margin-left:900px;">
+        <a @if (type == 1) { <text> class="select" </text>    } onclick="changeUseUser(1)">周</a>
+        <a @if (type == 2) { <text> class="select" </text>    } onclick="changeUseUser(2)">月</a>
+        @*<a @if (type == 3) { <text> class="select" </text> } onclick="LoadOrgs(3,@order)">年</a>*@
+    </div>
+    <div style="height: 175px;margin-top: 15px;" id="Chart">
+    </div>
+</div>
+<script>
+    var xlist = '@xlist';
+    var ylist1 = '@ylist1';
+    var ylist2 = '@ylist2';
+    var ylist3 = '@ylist3';
+    var ylist4 = '@ylist4';
+    var ylist5 = '@ylist5';
+    var xArr = xlist.split(',');
+    var yArr1 = ylist1.split(',');
+    var yArr2 = ylist2.split(',');
+    var yArr3 = ylist3.split(',');
+    var yArr4 = ylist4.split(',');
+    var yArr5 = ylist5.split(',');
+    var myChart = echarts.init(document.getElementById('Chart'));
+    option = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            top: '15%',
+            containLabel: true
+        },
+        legend: {
+            data: ["上传次数", "上传失败次数", "切图失败次数", "查看次数", "下载次数"]
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: xArr,//['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+            axisLabel: {
+                show: true
+            },
+            axisLine: {
+                lineStyle: {
+                    width: 2
+                }
+            }
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                show: true
+            },
+            axisLine: {
+                lineStyle: {
+                    width: 2
+                }
+            }
+        },
+        series: [
+            {
+                name: '上传次数',
+                type: 'line',
+                stack: '总量',
+                data: yArr1 //[120, 132, 101, 134, 90, 230, 210]
+            },
+            {
+                name: '上传失败次数',
+                type: 'line',
+                stack: '总量',
+                data: yArr2 //[120, 132, 101, 134, 90, 230, 210]
+            },
+            {
+                name: '切图失败次数',
+                type: 'line',
+                stack: '总量',
+                data: yArr3 //[120, 132, 101, 134, 90, 230, 210]
+            },
+            {
+                name: '查看次数',
+                type: 'line',
+                stack: '总量',
+                data: yArr4 //[120, 132, 101, 134, 90, 230, 210]
+            },
+            {
+                name: '下载次数',
+                type: 'line',
+                stack: '总量',
+                data: yArr5 //[120, 132, 101, 134, 90, 230, 210]
+            }
+        ]
+    };
+    myChart.setOption(option);
+    /**
+    * 切换时 只需重新请求给option 赋值即可
+    */
+    function changeUseUser(type) {
+        $("#chartView").closest("div").load('/Monitor/MonitorFileDataChart?type=' + type + "&r=" + Math.random());
+    }
+</script>

@@ -1,0 +1,95 @@
+﻿@{
+    Layout = "";
+    var site = ViewData["site"] as BsonDocument;
+    var dataBaseList = ViewData["dataBaseList"] as List<BsonDocument>;
+    var serverList = ViewData["serverList"] as List<BsonDocument>;
+    var customerCode = ViewData["customerCode"] as string;
+    var updateQuery = "";
+    if (!site.IsNullOrEmpty())
+    {
+        updateQuery = "db.SiteInfo.distinct('_id',{'siteId':'" + site.String("siteId") + "'})";
+    }
+}
+<form>
+<input type="hidden" name="tbName" value="SiteInfo" />
+<input type="hidden" name="queryStr" value="@updateQuery" />
+<input type="hidden" name="customerCode" value="@customerCode" />
+<table width="100%" class="table-noBorder">
+    <tr>
+    <td>
+        名称:
+    </td>
+    <td>
+        <input type="text" name="name" value="@site.String("name")" />
+    </td>
+    </tr>
+    <tr>
+    <td>
+        站点域:
+    </td>
+    <td>
+        <input type="text" name="siteDomain" value="@site.String("siteDomain")" />
+    </td>
+    </tr>
+    <tr>
+    <td>
+        首页地址:
+    </td>
+    <td>
+        <input type="text" name="indexUrl" value="@site.String("indexUrl")" />
+    </td>
+    </tr>
+    <tr>
+    <td>
+        登录名:
+    </td>
+    <td>
+        <input type="text" name="loginName" value="@site.String("loginName")" />
+    </td>
+    </tr>
+    <tr>
+    <td>
+        密码:
+    </td>
+    <td>
+        <input type="text" name="loginPwd" value="@site.String("loginPwd")" />
+    </td>
+    </tr>
+    <tr>
+    <td>
+        数据库:
+    </td>
+    <td>
+        <select name="dataBaseId" style="width:150px;">
+        @foreach (var dataBase in dataBaseList)
+        {
+            <option @if (dataBase.String("dataBaseId") == site.String("dataBaseId")) { <text> selected="selected"</text> } customerId="@dataBase.String("customerId")" value="@dataBase.String("dataBaseId")">@dataBase.String("name")</option> 
+        }
+        </select>
+    </td>
+    </tr>
+    <tr>
+    <td>
+        所在服务器:
+    </td>
+    <td>
+        <select name="serverId" style="width:150px;">
+        @foreach (var server in serverList)
+        {
+            <option @if (server.String("serverId") == site.String("serverId")) { <text> selected="selected"</text> } customerId="@server.String("customerId")" value="@server.String("serverId")">@server.String("name")</option> 
+        }
+        </select>
+    </td>
+    </tr>
+</table>
+</form>
+<script>
+    changeCustomer();
+    function changeCustomer() {
+        var customerId = $("customerId").val();
+        $("serverId").find("option[customerId!=" + customerId + "]").hide();
+        $("serverId").find("option[customerId=" + customerId + "]").show();
+        $("dataBaseId").find("option[customerId!=" + customerId + "]").hide();
+        $("dataBaseId").find("option[customerId=" + customerId + "]").show();
+    }
+</script>

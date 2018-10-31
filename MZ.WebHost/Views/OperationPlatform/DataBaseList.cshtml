@@ -1,0 +1,54 @@
+﻿@{
+    var customerCode = ViewData["customerCode"] as string;
+    var dataBaseList = ViewData["dataBaseList"] as List<BsonDocument>;
+    var serverList = ViewData["serverList"] as List<BsonDocument>;
+    var secretkey = ViewData["secretkey"] as string;
+    var isDecode = secretkey == BusinessLogicLayer.CusAppConfig.Secretkey;
+    var index = 0;
+    Layout = "";
+}
+<a class="p-btn p-btn_white_1" href="javascript:;" onclick="EditDataBase('0','@customerCode')">创建数据库信息</a>
+<a class="p-btn p-btn_white_1" href="javascript:;" onclick="Decryption()">解密编码</a>
+@if (dataBaseList.Count > 0)
+{
+<table width="100%" class="table table-bordered" style=" margin-top:10px;">
+    <thead>
+        <tr>
+            <th align="left">序号</th>
+            <th align="left">名称</th>
+            @*<th align="left">连接字符串</th>*@
+            <th align="left">端口号</th>
+            <th align="left">账号</th>
+            <th align="left">密码</th>
+            <th align="left">所在服务器</th>
+            <th align="left">描述</th>
+            <th align="left">操作</th>
+        </tr>
+    </thead>
+    @foreach (var database in dataBaseList)
+    {
+        var server = serverList.FirstOrDefault(c => c.String("serverId") == database.String("serverId"));
+        index++;
+        var account = isDecode && !string.IsNullOrEmpty(database.String("account")) ? BusinessLogicLayer.AESHelper.AESDecrypt(database.String("account"), customerCode) : database.String("account");
+        var password = isDecode && !string.IsNullOrEmpty(database.String("password")) ? BusinessLogicLayer.AESHelper.AESDecrypt(database.String("password"), customerCode) : database.String("password");
+    <tr>
+        <td>@index</td>
+        <td>@database.String("name")</td>
+        <td>@database.String("port")</td>
+        <td>@account</td>
+        <td>@password</td>
+        <td>@server.String("name")</td>
+        <td>@database.String("remark").Replace("\r\n", "<br />")</td>
+        <td>
+            <a class="fa fa-pencil mr5 p-f_blue" title="编辑" href="javascript:;" onclick="EditDataBase('@database.String("dataBaseId")','@customerCode')" ></a>
+            <a class="fa fa-close mr5 p-f_red" title="删除" href="javascript:void(0)" tbname="DataBase" querystr="db.DataBase.distinct('_id',{'dataBaseId':'@database.String("dataBaseId")'})" onclick="CustomDeleteItem(this, reload);"></a>
+        </td>
+    </tr>
+    }
+</table>
+}
+else {
+    <div class="yh-msg">
+        暂无数据库信息
+    </div>
+}

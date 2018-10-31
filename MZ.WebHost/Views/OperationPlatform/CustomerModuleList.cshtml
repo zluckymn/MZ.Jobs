@@ -1,0 +1,37 @@
+﻿@{
+    var moduleList = ViewData["moduleList"] as List<BsonDocument>;
+    var index = 0;
+    Layout = "";
+}
+@if (moduleList.Count > 0)
+{
+    <table width="100%" class="table table-bordered" style=" margin-top:10px;">
+        <thead>
+            <tr class="p-table_head">
+                <th align="left">序号</th>
+                <th align="left">名称</th>
+                <th align="left">路径</th>
+                <th align="left">操作</th>
+            </tr>
+        </thead>
+        @foreach (var module in moduleList)
+        {
+            index++;
+            <tr>
+                <td>@index</td>
+                <td>@module.String("name")</td>
+                <td>@module.String("path")</td>
+                <td>
+                    <a class="fa fa-pencil mr5 p-f_blue" title="编辑" href="javascript:;" onclick="EditModule('@module.String("moduleId")')"></a>
+                    <a class="fa fa-close mr5 p-f_red" title="删除" href="javascript:void(0)" tbname="CustomerModule" querystr="db.CustomerModule.distinct('_id',{'moduleId':'@module.String("moduleId")'})" onclick="CustomDeleteItem(this,LoadList);"></a>
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div class="yh-msg">
+        暂无模块信息
+    </div>
+}

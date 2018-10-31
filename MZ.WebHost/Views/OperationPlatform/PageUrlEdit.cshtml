@@ -1,0 +1,37 @@
+﻿@{
+    Layout = "";
+    var groupId = ViewData["groupId"] as string; 
+    var urlInfo = ViewData["urlInfo"] != null ? ViewData["urlInfo"] as BsonDocument : null;
+    var queryStr = ViewData["queryStr"] as string;    
+}
+<form>
+<input type="hidden" name="tbName" value="InitPageUrl" />
+<input type="hidden" name="queryStr" value="@queryStr" />
+<input type="hidden" name="groupId" value="@groupId" />
+<table class="table-noBorder w">
+    <tr>
+        <td width="90">
+            名称:
+        </td>
+        <td>
+            <input class="p-inputborder" type="text" name="name" value="@urlInfo.String("name")" />
+        </td>
+    </tr>
+     <tr>
+        <td>
+            链接地址:
+        </td>
+        <td>
+            <input class="p-inputborder" type="text" name="pageUrl" value="@urlInfo.String("pageUrl")" />
+        </td>
+    </tr>
+     <tr>
+        <td>
+            备注说明:
+        </td>
+        <td>
+            <input class="p-inputborder" type="text" name="remark" value="@urlInfo.String("remark")" />
+        </td>
+    </tr>
+</table>
+</form>

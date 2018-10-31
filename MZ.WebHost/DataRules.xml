@@ -1,0 +1,248 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataRules>
+  <Table Name="CustomerInfo" Remark="客户信息" >
+    <Column Name="customerId" IsPrimary="true" IsIdentity="true" Remark="主键" />
+    <Column Name="name" Remark="名称" />
+    <Column Name="customerCode" Remark="客户代码" />
+    <Column Name="bizGuid" Remark="文件服务代码" />
+    <Column Name="remark" Remark="备注" />
+  </Table>
+  <Table Name="CustomerWebConfigInfo" Remark="客户配置信息" >
+    <Column Name="webConfigId" IsPrimary="true" IsIdentity="true" Remark="主键" />
+    <Column Name="name" Remark="配置文件名" />
+    <!--<Column Name="fileServerUrl" Remark="文件服务器地址" />-->
+    <Column Name="authorityControl" Remark="权限控件" />
+    <Column Name="styleSheet" Remark="样式表" />
+    <Column Name="customerId" SourceTable="CustomerInfo" SourceColumn="customerId" Remark="所属客户" />
+  </Table>
+  <Table Name="CustomerConnect" Remark="客户站点服务器连接信息" >
+    <Column Name="connectId" IsPrimary="true" IsIdentity="true" Remark="主键" />
+    <Column Name="address" Remark="系统地址" />
+    <Column Name="account" Remark="账号" />
+    <Column Name="password" Remark="密码" />
+    <Column Name="vpnAddress" Remark="vpn地址" />
+    <Column Name="vpnAccount" Remark="vpn账号" />
+    <Column Name="vpnPassword" Remark="vpn密码" />
+    <Column Name="bljAddress" Remark="堡垒机地址" />
+    <Column Name="bljAccount" Remark="堡垒机账号" />
+    <Column Name="bljPassword" Remark="堡垒机密码" />
+    <Column Name="remark" Remark="详情" />
+    <Column Name="customerCode" SourceTable="CustomerInfo" SourceColumn="customerCode" Remark="所属客户" />
+  </Table>
+  <Table Name="SiteVersionInfo" Remark="版本信息" >
+    <Column Name="versionId" IsPrimary="true" IsIdentity="true" Remark="主键" />
+    <Column Name="name" Remark="发布包名称" />
+    <Column Name="releaseTime" Remark="发布时间" />
+    <Column Name="customerId" SourceTable="CustomerInfo" SourceColumn="customerId" Remark="所属客户" />
+    <Column Name="releaseTimeRange" Remark="发布时间范围" />
+    <Column Name="releaseUpdateContent" Remark="发布更新内容" />
+  </Table>
+  <Table Name="DataBase" Remark="数据库信息" >
+    <Column Name="dataBaseId" IsPrimary="true" IsIdentity="true" Remark="主键" />
+    <Column Name="name" Remark="名称" />
+    <Column Name="customerId" SourceTable="CustomerInfo" SourceColumn="customerId" Remark="所属客户" />
+    <Column Name="serverId" SourceTable="ServerInfo" SourceColumn="serverId" Remark="所属服务器" />
+    <Column Name="connectionString" Remark="连接地址" />
+    <Column Name="account" Remark="账号" />
+    <Column Name="password" Remark="密码" />
+    <Column Name="type" Remark="类型1.通用数据库2.初始化数据库3.站点数据库" />
+  </Table>
+  <Table Name="ServerInfo" Remark="服务器信息" >
+    <Column Name="serverId" IsPrimary="true" IsIdentity="true" Remark="主键" />
+    <Column Name="name" Remark="名称" />
+    <Column Name="serverAddress" Remark="服务器地址" />
+    <Column Name="customerId" SourceTable="CustomerInfo" SourceColumn="customerId" Remark="所属客户" />
+    <Column Name="type" Remark="类型1.站点服务器2.数据库服务器3.文件服务器" />
+  </Table>
+  <Table Name="SiteInfo" Remark="站点信息" >
+    <Column Name="siteId" IsPrimary="true" IsIdentity="true" Remark="主键" />
+    <Column Name="name" Remark="名称" />
+    <Column Name="customerId" SourceTable="CustomerInfo" SourceColumn="customerId" Remark="所属客户" />
+    <Column Name="dataBaseId" SourceTable="DataBase" SourceColumn="dataBaseId" Remark="所属数据库" />
+    <Column Name="serverId" SourceTable="ServerInfo" SourceColumn="serverId" Remark="所属服务器" />
+    <Column Name="siteDomain" Remark="站点域" />
+    <Column Name="indexUrl" Remark="首页地址" />
+    <Column Name="loginName" Remark="登录名" />
+    <Column Name="loginPwd" Remark="密码" />
+  </Table>
+  <Table Name="Monitor" Remark="监控" >
+    <Column Name="monitorId" IsPrimary="true" IsIdentity="true" Remark="主键" />
+    <Column Name="name" Remark="名称" />
+    <Column Name="type" SourceTable="MonitorType" SourceColumn="type" Remark="监控类型" />
+    <Column Name="jobId" SourceTable="MonitorJob" SourceColumn="type" Remark="监控工作" />
+    <Column Name="customerId" SourceTable="CustomerInfo" SourceColumn="customerId" Remark="客户Id" />
+    <Column Name="serverId" SourceTable="ServerInfo" SourceColumn="serverId" Remark="服务器Id" />
+    <Column Name="runCycle" Remark="运行周期" />
+    <Column Name="runTimes" Remark="运行次数" />
+    <Column Name="startTime" Remark="开始时间" />
+    <Column Name="endTime" Remark="结束时间" />
+    <Column Name="isNotice" Remark="是否发通知" />
+    <Column Name="runSituation" Remark="运行情况" />
+    <Column Name="tableName" Remark="存储表名" />
+    <Column Name="keyName" Remark="存储主键名" />
+  </Table>
+  <Table Name="InitPageUrlGroup" Remark="系统配置组别" >
+    <Column Name="groupId" IsPrimary="true" IsIdentity="true" Remark="主键" />
+    <Column Name="name" Remark="名称" />
+  </Table>
+  <Table Name="InitPageUrl" Remark="系统配置组别" >
+    <Column Name="urlId" IsPrimary="true" IsIdentity="true" Remark="主键" />
+    <Column Name="name" Remark="名称" />
+    <Column Name="pageUrl" Remark="链接地址" />
+    <Column Name="remark" Remark="备注说明" />
+    <Column Name="groupId" SourceTable="InitPageUrlGroup" SourceColumn="groupId" Remark="所属分组" />
+  </Table>
+  
+  <!-- job远程定时调度器-->
+  <Table Name="BackgroundJob" Remark="原始调度事务" >
+    <Column Name="backgroundJobId" IsPrimary="true" IsIdentity="true" Remark="主键" />
+    <Column Name="jobId"   Remark="guid类型" />
+    <Column Name="jobType" Remark="类型0 普通  1管理器 2更新器 3站点硬件检测" />
+    <Column Name="name" Remark="名称" />
+    <Column Name="assemblyName" Remark="所在程序集名称" />
+    <Column Name="className"  Remark="类名" />
+    <Column Name="descrption"  Remark="描述" />
+    <Column Name="jobArgs"  Remark="启动参数" />
+    <Column Name="cron"  Remark="cron表达式" />
+    <Column Name="cronDesc"  Remark="cron表达式描述" />
+    <Column Name="webApiUrl"  Remark="操作调用的webApi接口" />
+    <Column Name="nextRunTime"  Remark="下一次运行时间" />
+    <Column Name="lastRunTime"  Remark="上一次运行时间" />
+    <Column Name="runCount"  Remark="运行次数" />
+    <Column Name="status"  Remark="状态 0停止 1运行中 3启动中 5停止中" />
+    <Column Name="isDelete"  Remark="是否被删除" />
+    <Column Name="customerCode"  Remark="客户代码" />
+    <Column Name="statementId"  Remark="引用的Job调度Id" />
+    <Column Name="statementData"  Remark="报表数据" />
+    <Column Name="refJobId"  Remark="引用的Job调度Id" />
+  </Table>
+   
+  <Table Name="BackgroundJobLog" Remark="系统配置组别" >
+    <Column Name="logId" IsPrimary="true" IsIdentity="true" Remark="主键" />
+    <Column Name="jobId" Remark="所属JobId" />
+    <Column Name="name" Remark="名称" />
+    <Column Name="executionTime" Remark="执行时间" />
+    <Column Name="executionDuration"  Remark="运行时间" />
+    <Column Name="runLog"  Remark="内容" />
+    <Column Name="isMessagePack"  Remark="是否经过压缩1代表经过压缩" />
+  </Table>
+
+  <!--报表表单更新-->
+  <Table Name="StatementDataRuleLib" Remark="报表读取数据关联规则库" >
+    <Column Name="libId" IsPrimary="true" IsIdentity="true" Remark="设计费用具体值Id主键" />
+    <Column Name="name"  Remark="规则名称" />
+    <Column Name="remark"  Remark="规则描述（必填）" />
+    <Column Name="mainTbName"  Remark="主表名" />
+    <Column Name="foreignTbName"  Remark="外键表名" />
+    <Column Name="fixValue" Remark="固定值：格式{'isUse':'1','':''……}" />
+    <Column Name="foreignKey" Remark="外键关联值：格式{'主表中字段名':'外键表中字段名','主表中字段名':'外键表中字段名'……}" />
+    <Column Name="isUse" Remark="是否使用 1：是 2：不是" />
+    <Column Name="isReverse" Remark="是否可逆向 1：是 2：不是" />
+  </Table>
+  <Table Name="Statement" Remark="报表" >
+    <Column Name="statementId" IsPrimary="true" IsIdentity="true" Remark="报表格式" />
+    <Column Name="name"  Remark="名称" />
+    <Column Name="guid"  Remark="报表编码" />
+    <Column Name="isUse" Remark="是否使用 1：是 2：不是" />
+    <Column Name="storageTbName"  Remark="存储表名(数据返回插入的表的名称)" />
+    <Column Name="storageTbKeyName"  Remark="存储表名主键(数据返回插入的表的主键)" />
+    <Column Name="mainTbName"  Remark="主表名" />
+    <Column Name="primaryKeyName"  Remark="唯一字段名" />
+  </Table>
+  <!--<Table Name="StatementDataRuleRel" Remark="报表所拥有的表规则" >
+    <Column Name="relId" IsPrimary="true" IsIdentity="true" Remark="报表格式" />
+    <Column Name="name"  Remark="名称" />
+    <Column Name="statementId"  SourceTable="Statement" SourceColumn="statementId"   Remark="所属报表Id" />
+    <Column Name="libId"  SourceTable="StatementDataRuleLib" SourceColumn="libId"   Remark="所属报表Id" />
+    <Column Name="isMain" Remark="是否主表(控制每张表中只有一个值) 1：是  2：不是 " />
+  </Table>-->
+  <Table Name="StatementData" Remark="报表数据（示例规则）" >
+    <Column Name="dataId" IsPrimary="true" IsIdentity="true" Remark="报表格式" />
+    <Column Name="name"  Remark="名称" />
+  </Table>
+  <Table Name="StatementHeader" Remark="报表表头" >
+    <Column Name="headerId" IsPrimary="true" IsIdentity="true" Remark="报表表头格式" />
+    <Column Name="statementId"  SourceTable="Statement" SourceColumn="statementId"   Remark="所属报表Id" />
+    <Column Name="name"  Remark="名称" />
+    <Column Name="nodePid"  Remark="父节点" />
+    <Column Name="guid"  Remark="字段编码" />
+    <Column Name="dataSourcePortName"  Remark="字段数据源读取接口名称" />
+    <Column Name="methodId"  Remark="读取方式（不可为空）" />
+    <Column Name="methodName"  Remark="字段存入方法名称（字段统计值的方法体）当读取方式为1时，此项必填" />
+    <Column Name="verifyId"  Remark="验证方式（可为空）" />
+    <Column Name="storageFieldName"  Remark="存储字段名(设定编码格式)" />
+    <Column Name="readFieldName"  Remark="读取字段" />
+    <Column Name="dataType"  Remark="存储数据格式 1：string" />
+    <Column Name="isShow" Remark="是否显示 1：是 2：不是" />
+    <Column Name="sortField" Remark="分组条件  sortField:{'',''}" />
+    <Column Name="queryStr" Remark="查询方法参数{readField:{'',''}}" />
+    <Column Name="fixValue" Remark="固定值：格式{'isUse':'1','':''……}" />
+    <Column Name="mainTbName" Remark="主表名" />
+    <Column Name="foreignTbName" Remark="涉及的外键表名  外键表名|MZ|外键表名" />
+    <Column Name="foreignKeyName" Remark="与主表中对应的外键名称" />
+  </Table>
+  <Table Name="StatementFieldGetMethod" Remark="数据读取方式（初始化）" >
+    <Column Name="methodId" IsPrimary="true" IsIdentity="true" Remark="数据读取方式主键" />
+    <Column Name="name"  Remark="名称" />
+    <Column Name="type"  Remark="类型1：特殊方法直接写;2：单表字段值复制 3：单表（分组）字段值统计个数 4：单表字段值比较大小" />
+    <Column Name="methodName"  Remark="方法名称（字段统计值的方法体）" />
+  </Table>
+  <Table Name="WebApiManage" Remark="站点api接口，用于在各类接口调用的动态访问的接口配合WebAPIHelper使用" >
+    <Column Name="webApiId" IsPrimary="true" IsIdentity="true" Remark="主键" />
+    <Column Name="url" Remark="访问url地址" />
+    <Column Name="keyCode" Remark="用于唯一识别，或者用于方法调用" />
+    <Column Name="paramArray"  Remark="参数列表" />
+    <Column Name="remark"  Remark="描述内容" />
+  </Table>
+  <Table Name="DataVersion" Remark="数据版本表" >
+    <Column Name="versionId" IsPrimary="true" IsIdentity="true" Remark="主键" />
+    <Column Name="statementGuid" Remark="报表guid" />
+    <Column Name="tableName" Remark="表名" />
+    <Column Name="customerCode" Remark="客户代码" />
+    <Column Name="version" Remark="版本号递增" />
+  </Table>
+  <Table Name="CustomerImportUser" Remark="关键用户" >
+    <Column Name="relId" IsPrimary="true" IsIdentity="true" Remark="主键" />
+    <Column Name="userId" Remark="用户Id" />
+    <Column Name="customerCode" Remark="客户代码" />
+  </Table>
+  <Table Name="CustomerModule" Remark="模块" >
+    <Column Name="moduleId" IsPrimary="true" IsIdentity="true" Remark="主键" />
+    <Column Name="name" Remark="名称" />
+    <Column Name="path" Remark="请求地址" />
+    <Column Name="customerCode" Remark="客户代码" />
+  </Table>
+  <Table Name="CustomerStageTask" Remark="阶段任务" >
+    <Column Name="taskId" IsPrimary="true" IsIdentity="true" Remark="主键" />
+    <Column Name="name" Remark="名称" />
+    <Column Name="nodeKey" Remark="用于排序" />
+    <Column Name="customerCode" Remark="客户代码" />
+  </Table>
+
+  <Table Name="MQConsumerInfo" Remark="MQ消费者信息" >
+    <Column Name="consumerId" IsPrimary="true" IsIdentity="true" Remark="消费者主键:ip+type" />
+    <Column Name="ip" Remark="消费者客户端ip" />
+    <Column Name="queueType" Remark="队列类型orMQ虚拟主机类型==MQ队列名" />
+    <Column Name="isStart" Remark="是否已启动" />
+    <Column Name="lastStartTime" Remark="上次启动时间" />
+    <Column Name="lastEndTime" Remark="上次结束时间" />
+    <Column Name="lastExecTime" Remark="最后一次成功执行的时间" />
+  </Table>
+  <Table Name="MQConsumerLog" Remark="MQ消费日志" >
+    <Column Name="logId" IsPrimary="true" IsIdentity="true" Remark="消费日志" />
+    <Column Name="consumerId" SourceTable="MQConsumerInfo" SourceColumn="consumerId" Remark="消费者id" />
+    <Column Name="type" Remark="0:异常 1:db false" />
+    <Column Name="msg" Remark="日志信息" />
+    <Column Name="sourceData" Remark="源数据" />
+    <Column Name="time" Remark="发生的时间" />
+  </Table>
+  <Table Name="MQServerMonitor" Remark="MQ服务端队列监控" >
+    <Column Name="host" IsPrimary="true" IsIdentity="true" Remark="服务端主机" />
+    <Column Name="queueName" Remark="队列名" />
+    <Column Name="interval" Remark="检测间隔" />
+    <Column Name="status" Remark="0:正常 1:超时" />
+    <Column Name="threshold" Remark="发邮件阈值" />
+    <Column Name="pingTime" Remark="发生的时间" />
+    <Column Name="pongTime" Remark="响应的时间" />
+  </Table>
+</DataRules>

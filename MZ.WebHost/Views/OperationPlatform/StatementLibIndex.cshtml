@@ -1,0 +1,56 @@
+﻿@{
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <a class="p-btn" href="javascript:;" onclick="EditStatementLib('0')">创建规则</a>
+                <div id="statementLibList">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    SetMenu(4, 8);
+    LoadList();
+    function LoadList() {
+        $("#statementLibList").load("/OperationPlatform/StatementLibList?r=" + Math.random());
+    }
+    function EditStatementLib(id) {
+        var title = "规则创建";
+        if (id != 0 && id != "0") {
+            title = "规则编辑";
+        }
+        $.YH.box({
+            target: '/OperationPlatform/StatementLibEdit?libId=' + id + "&r=" + Math.random(),
+            title: title,
+            width: 350,
+            ok: function () {
+                var formData = $(this).find("form").serialize();
+                $.ajax({
+                    url: "/Home/SavePostInfo",
+                    type: 'post',
+                    error: function () {
+                        layer.msg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+                        //$.tmsg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { infotype: 2 });
+                    },
+                    data: formData,
+                    success: function (data) {
+                        if (data.Success) {
+                            layer.msg('保存成功！', { icon: 6 });
+                            //$.tmsg("m_jfw", "保存成功！", { infotype: 1 });
+                            LoadList();
+                        }
+                        else {
+                            layer.msg(data.Message, { icon: 5 });
+                            //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                        }
+                    }
+                });
+            }
+        });
+    }
+</script>

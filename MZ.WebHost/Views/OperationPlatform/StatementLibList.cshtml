@@ -1,0 +1,48 @@
+﻿@{
+    var statementLibList = ViewData["statementLibList"] as List<BsonDocument>;
+    var index = 0;
+    Layout = "";
+}
+@if (statementLibList.Count > 0)
+{
+    <table width="100%" class="table table-bordered" style=" margin-top:10px;">
+        <thead>
+            <tr class="p-table_head">
+                <th align="left">序号</th>
+                <th align="left">名称</th>
+                <th align="left">规则描述</th>
+                <th align="left">主表名</th>
+                <th align="left">外键表名</th>
+                <th align="left">外键关联值</th>
+                <th align="left">固定值</th>
+                <th align="left">是否使用</th>
+                <th align="left">操作</th>
+            </tr>
+        </thead>
+        @foreach (var statementLib in statementLibList)
+        {
+            index++;
+            var isUse = statementLib.Int("isUse") == 1 ? "是" : "否";
+            <tr>
+                <td>@index</td>
+                <td>@statementLib.String("name")</td>
+                <td>@statementLib.String("remark")</td>
+                <td>@statementLib.String("mainTbName")</td>
+                <td>@statementLib.String("foreignTbName")</td>
+                <td>@statementLib.String("foreignKey")</td>
+                <td>@statementLib.String("fixValue")</td>
+                <td>@isUse</td>
+                <td>
+                    <a class="fa fa-pencil mr5 p-f_blue" title="编辑" href="javascript:;" onclick="EditStatementLib('@statementLib.String("libId")')"></a>
+                    <a class="fa fa-close mr5 p-f_red" title="删除" href="javascript:void(0)" tbname="StatementDataRuleLib" querystr="db.StatementDataRuleLib.distinct('_id',{'libId':'@statementLib.String("libId")'})" onclick="CustomDeleteItem(this,LoadList);"></a>
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div class="yh-msg">
+        暂无报表信息
+    </div>
+}

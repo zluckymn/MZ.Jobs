@@ -1,0 +1,90 @@
+﻿@{
+    var backgroundJobLogList = ViewData["backgroundJobLogList"] as List<BsonDocument>;
+    var startStr = ViewData["startStr"] as string;
+    var endStr = ViewData["endStr"] as string;
+    var index = 0;
+    Layout = "";
+    MZ.BusinessLogicLayer.Business.JobLogBll logBll = MZ.BusinessLogicLayer.Business.JobLogBll._();
+}
+<style>
+    .table tbody tr td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+<div>
+    <input type="text" id="startDate" value="@startStr" onclick="WdatePicker()" onchange="timeLoad()" />-<input type="text" id="endDate" value="@endStr" onclick="WdatePicker()" onchange="timeLoad()" />
+    @if (backgroundJobLogList.Count > 0)
+    {
+        <table width="100%" class="table table-bordered table-hover" style="margin-top:10px;table-layout:fixed;">
+            <thead>
+                <tr>
+                    <th align="left" width="3%">  <input type="checkbox" id="allCheck" /></th>
+                    <th align="left" width="4%">序号</th>
+                    <th align="left" width="14%">名称</th>
+                    <th align="left">数据</th>
+                    <th align="left" width="6%">用时</th>
+                    <th align="left" width="11%">时间</th>
+                </tr>
+            </thead>
+            @foreach (var backgroundJobLog in backgroundJobLogList.OrderBy(c => c.Text("jobType")).ThenByDescending(c => c.Text("createDate")))
+            {
+                var logId = backgroundJobLog.Text("logId");
+                index++;
+                string logContent = backgroundJobLog.Int("isMessagePack") == 1 ? logBll.LogDataMessageDePack(backgroundJobLog).String("runLog") : backgroundJobLog.String("runLog");
+                logContent = logContent.Length > 1000 ? logContent.Substring(0, 1000) : logContent;
+                logContent = logContent.Replace("\\", "");
+                <tr>
+                    <td align="left" width="1%">  <input type="checkbox" name="chk" value="@logId" /></td>
+                    <td>@index</td>
+                    <td>@backgroundJobLog.String("name")</td>
+                    <td title="@logContent">@logContent</td>
+                    <td>@backgroundJobLog.String("executionDuration")</td>
+                    <td>@backgroundJobLog.String("executionTime")</td>
+                </tr>
+            }
+        </table>
+        <a class="p-btn p-btn_white_1" href="javascript:;" id="deleteBtn" >批量删除</a>
+    }
+    else
+    {
+        <div class="yh-msg">
+            暂无日志信息
+        </div>
+    }
+</div>
+
+<script>
+    function timeLoad() {
+        LoadList($("#selectList").find("li.active"));
+    }
+    $("#allCheck").click(function() {
+
+        var checkStatus = $("#allCheck").is(':checked');
+        console.log(checkStatus);
+        $("input[name='chk']").each((i, n) => {
+            if (checkStatus) {
+                $(n).prop("checked", checkStatus);
+            } else {
+                $(n).prop("checked", checkStatus);
+            }
+        })
+    });
+
+    $("#deleteBtn").click(function () {
+        var spCodesTemp=""
+        $("input:checkbox[name=chk]:checked'").each(function (i) {
+            if (0 == i) {
+                spCodesTemp = $(this).val();
+            } else {
+                spCodesTemp += ("," + $(this).val());
+            }
+        });
+        consol.log(spCodesTemp);
+    });
+
+
+
+     
+</script>

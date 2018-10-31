@@ -1,0 +1,30 @@
+﻿@{
+    Layout = "";
+    var dataList = ViewData["dataList"] as List<BsonDocument>;
+}
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>城市</th>
+            <th>工程类别</th>
+            <th>项目数</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var data in dataList)
+        {
+            <tr>
+                <td>@data.Text("cityName")</td>
+                <td>@data.Text("qdTypeName")</td>
+                <td>@data.Text("count")</td>
+            </tr>
+        }
+        @if (dataList.Count == 0)
+        {
+            <tr>
+                <td colspan="3">暂无数据</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

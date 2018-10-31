@@ -1,0 +1,285 @@
+﻿
+@{
+    ViewBag.Title = "MonitorBusiness";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+    var landList = ViewData["landList"] as List<BsonDocument>;
+    var projList = ViewData["projList"] as List<BsonDocument>;
+}
+
+<div>
+    <div class="p-title1">系统数据量及完整度分析</div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-title bg-blue">
+                    <h5 class="p-title2">系统基础模块数据量</h5>
+                </div>
+                <div class="panel-body" style="height:300px;" id="pileCharts">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="p-title1">核心业务数据</div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-title bg-red">
+                    <h5 class="p-title2">设计供方监控</h5>
+                </div>
+                <div id="p-j-supplier" class="table-responsive pre-scrollable" style="padding:10px; max-height:395px;">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-title bg-blue">
+                    <h5 class="p-title2">材料监控</h5>
+                </div>
+                <div id="p-j-mat" class="table-responsive pre-scrollable" style="padding:10px; max-height:395px;">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-title bg-green">
+                    <h5 class="p-title2">设计文件报批标准指引</h5>
+                </div>
+                <div style="padding:10px 15px; font-weight:bold;">
+                    项目:&nbsp;&nbsp;<select style="height:30px; width:200px;" id="proj1" onchange="laodForm(1)">
+                        @foreach (var land in landList)
+                        {
+                            var curProjList = projList.Where(c => c.String("landId") == land.String("landId")).ToList();
+                            <optgroup label='@land.String("name")'>
+                                @foreach (var proj in curProjList)
+                                {
+                                    <option value='@proj.String("projId")'>@proj.String("name")</option>
+                                }
+                            </optgroup>
+                        }
+                    </select>
+                </div>
+                <div id="form1" class="pre-scrollable" style="padding:10px; max-height:395px;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-title bg-red">
+                    <h5 class="p-title2">工程文件报批标准指引</h5>
+                </div>
+                <div style="padding:10px 15px; font-weight:bold;">
+                    项目:&nbsp;&nbsp;<select style="height:30px; width:200px;" id="proj2" onchange="laodForm(2)">
+                        @foreach (var land in landList)
+                        {
+                            var curProjList = projList.Where(c => c.String("landId") == land.String("landId")).ToList();
+                            <optgroup label='@land.String("name")'>
+                                @foreach (var proj in curProjList)
+                                {
+                                    <option value='@proj.String("projId")'>@proj.String("name")</option>
+                                }
+                            </optgroup>
+                        }
+                    </select>
+                </div>
+                <div id="form2" class="pre-scrollable" style="padding:10px; max-height:395px;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-title bg-blue">
+                    <h5 class="p-title2">政府部门要求</h5>
+                </div>
+                <div style="padding:10px 15px; font-weight:bold;">
+                    项目:&nbsp;&nbsp;<select style="height:30px; width:200px;" id="proj3" onchange="laodForm(3)">
+                        @foreach (var land in landList)
+                        {
+                            var curProjList = projList.Where(c => c.String("landId") == land.String("landId")).ToList();
+                            <optgroup label='@land.String("name")'>
+                                @foreach (var proj in curProjList)
+                                {
+                                    <option value='@proj.String("projId")'>@proj.String("name")</option>
+                                }
+                            </optgroup>
+                        }
+                    </select>
+                </div>
+                <div id="form3" class="pre-scrollable" style="padding:10px; max-height:395px;">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-title bg-purple">
+                    <h5 class="p-title2">竞品</h5>
+                </div>
+                <div style="padding:10px 15px; font-weight:bold;">
+                    项目:&nbsp;&nbsp;<select style="height:30px; width:200px;" id="proj4" onchange="laodForm(4)">
+                        @foreach (var land in landList)
+                        {
+                            var curProjList = projList.Where(c => c.String("landId") == land.String("landId")).ToList();
+                            <optgroup label='@land.String("name")'>
+                                @foreach (var proj in curProjList)
+                                {
+                                    <option value='@proj.String("projId")'>@proj.String("name")</option>
+                                }
+                            </optgroup>
+                        }
+                    </select>
+                </div>
+                <div id="form4" class="pre-scrollable" style="padding:10px; max-height:395px;">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    loadSupplierList();
+    loadMat();
+    SetMenu(2, 4);
+    laodForm(1);
+    laodForm(2);
+    laodForm(3);
+    laodForm(4);
+    function laodForm(type) {
+        var projId = $("#proj" + type).val();
+        $("#form" + type).load("/Monitor/TreeFormTable?projId="+projId+"&type=" + type + "&r=" + Math.random());
+    }
+    function loadSupplierList(){
+        $("#p-j-supplier").load("/Monitor/SupplierMonitorReport");
+    }
+    function loadMat() {
+        $("#p-j-mat").load("/Monitor/MaterialMonitorReport");
+    }
+
+    var pileCharts = echarts.init(document.getElementById('pileCharts'));
+    var barWidth = 30;
+    option = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+        },
+        legend: {
+            data: ['数据量', '新增量', '更新量', '下载量', '浏览量']
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                show: true,
+                textStyle: {
+                    color: '#aaa'
+                }
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#aaa'
+                }
+            }
+        },
+        xAxis: {
+            type: 'category',
+            data: ['产品线', '客群', '土地', '工艺工法', '材料', '规划报建要求', '竞品', '项目资料'],
+            axisLabel: {
+                show: true,
+                textStyle: {
+                    color: '#aaa'
+                }
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#aaa'
+                }
+            }
+        },
+        series: [
+            {
+                name: '数据量',
+                type: 'bar',
+                stack: '总量',
+                barWidth: barWidth,//柱图宽度
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'insideRight'
+                    }
+                },
+                data: [123, 322, 354, 445, 347,423,234,642]
+            },
+            {
+                name: '新增量',
+                type: 'bar',
+                stack: '总量',
+                barWidth: barWidth,//柱图宽度
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'insideRight'
+                    }
+                },
+                data: [152, 364, 584, 431, 453,246,354,561]
+            },
+            {
+                name: '更新量',
+                type: 'bar',
+                stack: '总量',
+                barWidth: barWidth,//柱图宽度
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'insideRight'
+                    }
+                },
+                data: [245, 417, 381, 422, 210,264,564,346]
+            },
+            {
+                name: '下载量',
+                type: 'bar',
+                stack: '总量',
+                barWidth: barWidth,//柱图宽度
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'insideRight'
+                    }
+                },
+                data: [165, 232, 315, 210, 114,655,612,346]
+            },
+            {
+                name: '浏览量',
+                type: 'bar',
+                stack: '总量',
+                barWidth: barWidth,//柱图宽度
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'insideRight'
+                    }
+                },
+                data: [165, 232, 315, 210, 114, 655, 612, 346]
+            }
+        ]
+    };
+    pileCharts.setOption(option);
+</script>

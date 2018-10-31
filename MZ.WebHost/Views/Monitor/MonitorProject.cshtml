@@ -1,0 +1,143 @@
+﻿
+@{
+    ViewBag.Title = "MonitorProject";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+    var landList = ViewData["landList"] as List<BsonDocument>;
+    var projList = ViewData["projList"] as List<BsonDocument>;
+    var designerData = ViewData["designerData"] as BsonDocument;
+    var customerCode = ViewData["customerCode"] as string;
+}
+
+<div>
+    <div class="p-title1">项目应用情况</div>
+    <div class="row">
+        <div class="col-md-7">
+            <div class="panel panel-default">
+                <div class="panel-title bg-green">
+                    <h5 class="p-title2">流程监控数据</h5>
+                </div>
+                <div id="busFlowTime">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="panel panel-default">
+                <div class="panel-title bg-red">
+                    <h5 class="p-title2">审批效率排行榜</h5>
+                </div>
+                <div id="approvals" class="table-responsive pre-scrollable" style="padding:10px; max-height:395px;">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body control_panel">
+                    <h5 class="p-title2">设计师工作饱和度</h5>
+                    <div class="clearfix">
+                        <ul class="fl" style="margin-top:10px;">
+                            <li><span class="p-f_blue fb">设计师状态良好</span></li>
+                            <li>项目数：<span class="fb text-primary">@designerData.String("projCount")个</span></li>
+                            <li>总建筑面积：<span class="fb text-primary">@designerData.String("buildingArea")㎡</span></li>
+                            <li>建筑设计师总数量：<span class="fb text-primary">@designerData.String("userCount")个</span></li>
+                            <li>建筑师人均项目数：<span class="fb text-primary">@designerData.String("userProj")个</span></li>
+                            <li>建筑师人均设计面积：<span class="fb text-primary">@designerData.String("userArea")㎡</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="panel panel-default">
+                <div class="panel-title bg-purple clearfix">
+                    <h5 class="p-title2 fl">项目执行偏差详情</h5>
+                    <a class="fr fa fa-cog ml10 p-f_white" href="javascript:;" onclick="selectStageTask()" title="设置"></a>
+                </div>
+                <div class="panel-body" id="deviation">
+                </div>
+            </div>
+        </div>
+    </div>*@
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-title bg-blue">
+                    <h5 class="p-title2">计划任务完成报表</h5>
+                </div>
+                <div style="padding-top:10px; padding-left:15px; font-weight:bold;">
+                    项目:&nbsp;&nbsp;<select style="height:30px; width:200px;" id="projId" onchange="loadTaskList()">
+                        @foreach (var land in landList)
+                        {
+                            var curProjList = projList.Where(c => c.String("landId") == land.String("landId")).ToList();
+                            <optgroup label='@land.String("name")'>
+                                @foreach (var proj in curProjList)
+                                {
+                                    <option value='@proj.String("projId")'>@proj.String("name")</option>
+                                }
+                            </optgroup>
+                        }
+                    </select>
+                </div>
+                <div id="p-j-task" class="table-responsive pre-scrollable" style="padding:10px; max-height:395px;">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    loadTaskList();
+    laodApproval();
+    loadBusFlowTime();
+    loadDeviation();
+    SetMenu(2, 3);
+    function selectStageTask() {
+        var customerCode = "@customerCode";
+        var title = "选择任务";
+        $.YH.box({
+            target: '/Monitor/SelectStageTask?customerCode='+customerCode+'&r=' + Math.random(),
+            title: title,
+            width: 450,
+            ok: function () {
+                var tasks = "";
+                $("#selectTask").find("li").each(function () {
+                    tasks += $(this).attr("taskName") + "|#|" + $(this).attr("nodeKey") + ",";
+                })
+                $.ajax({
+                    url: "/Home/SaveStageTask",
+                    type: 'post',
+                    error: function () {
+                        layer.msg('未知错误，请联系服务器管理员，或者刷新页面重试!', { icon: 5 });
+                    },
+                    data: {
+                        tasks: tasks,
+                        customerCode: customerCode
+                    },
+                    success: function (data) {
+                        if (data.Success) {
+                            layer.msg('保存成功！', { icon: 6 });
+                        } else {
+                            layer.msg(data.Message, { icon: 5 });
+                        }
+                    }
+                });
+            }
+        });
+    }
+    function loadDeviation() {
+        $("#deviation").load("/Monitor/ProjectPlanTaskExecutionDeviation?r=" + Math.random());
+    }
+    function loadTaskList() {
+        var projId = $("#projId").val();
+        $("#p-j-task").load("/Monitor/DesignPlanTaskCompletionReport?projId="+projId+"&r="+Math.random());
+    }
+    function laodApproval() {
+        $("#approvals").load("/Monitor/UserApprovalTime?r=" + Math.random());
+    }
+    function loadBusFlowTime() {
+        $("#busFlowTime").load("/Monitor/BusFlowTime?r=" + Math.random());
+    }
+</script>

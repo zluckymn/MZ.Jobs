@@ -1,0 +1,52 @@
+﻿@{
+    var userApprovalList = ViewData["userApprovalList"] as List<BsonDocument>;
+    var index = 0;
+ }
+<table class="table table-hover">
+    <colgroup>
+        <col width="7%">
+        <col width="15%">
+        <col width="">
+        <col width="16%">
+        <col width="16%">
+        <col width="16%">
+    </colgroup>
+    <thead>
+        <tr>
+            <th>名次</th>
+            <th>姓名</th>
+            <th>部门</th>
+            <th>平均耗时</th>
+            <th>最长耗时</th>
+            <th>最短耗时</th>
+        </tr>
+    </thead>
+    @foreach (var userApp in userApprovalList)
+    {
+        index++;
+        var className = "";
+        switch (index)
+        {
+            case 1:
+                className = "bg-red";
+                break;
+            case 2:
+                className = "bg-blue";
+                break;
+            case 3:
+                className = "bg-green";
+                break;
+            default:
+                className = "bg-gray1";
+                break;
+        }
+        <tr>
+            <td><a class='@className rank'>@index</a></td>
+            <td>@userApp.String("name")</td>
+            <td>@userApp.String("orgNames")</td>
+            <td>@userApp.String("averageTime") h</td>
+            <td>@userApp.String("maxTime") h</td>
+            <td>@userApp.String("minTime") h</td>
+        </tr>
+    }
+</table>

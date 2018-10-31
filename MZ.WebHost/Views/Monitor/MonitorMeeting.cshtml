@@ -1,0 +1,65 @@
+﻿
+@{
+    ViewBag.Title = "MonitorMeeting";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+    var date = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
+}
+<div>
+    <div class="p-title1">会议监控</div>
+    @*<div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-title bg-red">
+                    <h5 class="p-title2">会议数据监控</h5>
+                </div>
+                <div id="p-j-meeting" class="table-responsive pre-scrollable" style="padding:10px; max-height:395px;">
+
+                </div>
+            </div>
+        </div>
+    </div>*@
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-title bg-red clearfix">
+                    <h5 class="p-title2 fl">各会议状态数量</h5>
+                    <div class="date-picker"><i class="fa fa-calendar"></i><input type="text" id="date" value="@date" onclick="WdatePicker()" onchange="LoadMeetingStatusCount()" /></div>
+                </div>
+                <div id="p-j-meetingStatusCount" class="table-responsive pre-scrollable" style="padding:10px; max-height:395px;">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-title bg-blue clearfix">
+                    <h5 class="p-title2 fl">会议数据监控</h5>
+                    <div class="date-picker"><i class="fa fa-calendar"></i><input type="text" id="date1" value="@date" onclick="WdatePicker()" onchange="LoadMeetingMatter()" /></div>
+                </div>
+                <div id="p-j-meetingMatter" class="table-responsive pre-scrollable" style="padding:10px; max-height:395px;">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    SetMenu(2, 5);
+    //LoadMeetings();
+    //function LoadMeetings() {
+    //    $("#p-j-meeting").load("/Monitor/MonitorMeetingProjs?r=" + Math.random());
+    //}
+    LoadMeetingStatusCount();
+    LoadMeetingMatter();
+    function LoadMeetingStatusCount() {
+        var date = $("#date").val();
+        $("#p-j-meetingStatusCount").load("/Monitor/MonitorMeetingStatusCount?date=" + date + "&r=" + Math.random());
+    }
+    function LoadMeetingMatter() {
+        var date = $("#date1").val();
+        $("#p-j-meetingMatter").load("/Monitor/MonitorMeetingMatter?date=" + date + "&r=" + Math.random());
+    }
+</script>
+

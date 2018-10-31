@@ -1,0 +1,38 @@
+﻿@{
+    var statement = ViewData["statement"] as BsonDocument;
+    var headerList = ViewData["headerList"] as List<BsonDocument>;
+    var dataList = ViewData["dataList"] as List<BsonDocument>;
+    var index = 0;
+    Layout = "";
+}
+@if (headerList.Count > 0)
+{
+    <table width="100%" class="table">
+        <thead>
+            <tr>
+                <th align="left">序号</th>
+                @foreach (var header in headerList)
+                {
+                    <th align="left">@header.String("name")</th>
+                }
+            </tr>
+        </thead>
+        @foreach (var data in dataList)
+        {
+            index++;
+            <tr>
+                <td>@index</td>
+                @foreach (var header in headerList)
+                {
+                    <td>@data.String(header.String("storageFieldName"))</td>
+                }
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div>
+        暂无数据
+    </div>
+}

@@ -1,0 +1,120 @@
+﻿@using Yinhe.ProcessingCenter.Document
+@{
+    var serverList = ViewData["serverList"] as List<BsonDocument>;
+    var customerCode = ViewData["customerCode"] as string;
+    var secretkey = ViewData["secretkey"] as string;
+    var customerConnect = ViewData["customerConnect"] as BsonDocument;
+    var fileRelList = ViewData["fileRelList"] as List<BsonDocument>;
+    var fileList = ViewData["fileList"] as List<BsonDocument>;
+    var isDecode = secretkey == BusinessLogicLayer.CusAppConfig.Secretkey;
+    var index = 0;
+    Layout = "";
+}
+<style>.table-noBorder th,.table-noBorderd td{padding:10px;}</style>
+<a class="p-btn p-btn_white_1" href="javascript:;" onclick="EditServer('0','@customerCode')">创建服务器信息</a>
+<a class="p-btn p-btn_white_1" href="javascript:;" onclick="SetCustomerConnect('@customerCode')">设置连接方式</a>
+<a class="p-btn p-btn_white_1" href="javascript:;" onclick="Decryption()">解密编码</a>
+@if (!customerConnect.IsNullOrEmpty())
+{
+    <table width="100%" class="table-noBorder table-hover mt10">
+        @if (!string.IsNullOrEmpty(customerConnect.String("address")))
+        {
+            var accounts = isDecode && !string.IsNullOrEmpty(customerConnect.String("account")) ? BusinessLogicLayer.AESHelper.AESDecrypt(customerConnect.String("account"), customerCode) : customerConnect.String("account");
+            var passwords = isDecode && !string.IsNullOrEmpty(customerConnect.String("password")) ? BusinessLogicLayer.AESHelper.AESDecrypt(customerConnect.String("password"), customerCode) : customerConnect.String("password");
+            <tr>
+                <td width="100" class="p-f_gray">访问地址：</td>
+                <td width="300">@customerConnect.String("address")</td>
+                <td width="100" class="p-f_gray">账号：</td>
+                <td width="250">@accounts</td>
+                <td width="100" class="p-f_gray">密码：</td>
+                <td>@passwords</td>
+            </tr>
+        }
+        @if (!string.IsNullOrEmpty(customerConnect.String("vpnAddress")))
+        {
+            var vpnAccounts = isDecode && !string.IsNullOrEmpty(customerConnect.String("vpnAccount")) ? BusinessLogicLayer.AESHelper.AESDecrypt(customerConnect.String("vpnAccount"), customerCode) : customerConnect.String("vpnAccount");
+            var vpnPasswords = isDecode && !string.IsNullOrEmpty(customerConnect.String("vpnPassword")) ? BusinessLogicLayer.AESHelper.AESDecrypt(customerConnect.String("vpnPassword"), customerCode) : customerConnect.String("vpnPassword");
+            <tr>
+                <td width="100" class="p-f_gray">vpn地址：</td>
+                <td width="300">@customerConnect.String("vpnAddress")</td>
+                <td width="100" class="p-f_gray">vpn账号：</td>
+                <td width="250">@vpnAccounts</td>
+                <td width="100" class="p-f_gray">vpn密码：</td>
+                <td>@vpnPasswords</td>
+            </tr>
+        }
+        @if (!string.IsNullOrEmpty(customerConnect.String("bljAddress")))
+        {
+            var bljAccounts = isDecode && !string.IsNullOrEmpty(customerConnect.String("bljAccount")) ? BusinessLogicLayer.AESHelper.AESDecrypt(customerConnect.String("bljAccount"), customerCode) : customerConnect.String("bljAccount");
+            var bljPasswords = isDecode && !string.IsNullOrEmpty(customerConnect.String("bljPassword")) ? BusinessLogicLayer.AESHelper.AESDecrypt(customerConnect.String("bljPassword"), customerCode) : customerConnect.String("bljPassword");
+            <tr>
+                <td width="100" class="p-f_gray">堡垒机地址：</td>
+                <td width="300">@customerConnect.String("bljAddress")</td>
+                <td width="100" class="p-f_gray">堡垒机账号：</td>
+                <td width="250">@bljAccounts</td>
+                <td width="100" class="p-f_gray">堡垒机密码：</td>
+                <td>@bljPasswords</td>
+            </tr>
+        }
+        @if (!string.IsNullOrEmpty(customerConnect.String("remark")))
+        {
+            <tr>
+                <td class="p-f_gray">描述：</td>
+                <td colspan="5">@customerConnect.String("remark").Replace("\n", "<br />")</td>
+            </tr>
+        }
+        @if (fileList.Count > 0)
+        {
+            <tr>
+                <td class="p-f_gray">软件安装包：</td>
+                <td colspan="5">
+                    @foreach (var file in fileList)
+                    {
+                        <a href="javascript:;" onclick="@FileCommonOperation.GetClientOnlineRead(file)">@file.String("name")</a>
+                        <a href="javascript:;" onclick="@FileCommonOperation.GetClientDownLoad(file)" class="fa fa-download ml5" title="下载"></a>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+}
+@if (serverList.Count > 0)
+{
+    <table width="100%" class="table table-bordered" style=" margin-top:10px;">
+        <thead>
+            <tr>
+                <th align="left">序号</th>
+                <th align="left">名称</th>
+                <th align="left">服务器地址</th>
+                <th align="left">账号</th>
+                <th align="left">密码</th>
+                <th align="left">描述</th>
+                <th align="left">操作</th>
+            </tr>
+        </thead>
+        @foreach (var server in serverList)
+        {
+            var account = isDecode && !string.IsNullOrEmpty(server.String("account")) ? BusinessLogicLayer.AESHelper.AESDecrypt(server.String("account"), customerCode) : server.String("account");
+            var password = isDecode && !string.IsNullOrEmpty(server.String("password")) ? BusinessLogicLayer.AESHelper.AESDecrypt(server.String("password"), customerCode) : server.String("password");
+            index++;
+            <tr>
+                <td>@index</td>
+                <td><a href="javascript:void(0)" onclick="LoadIISSite('@server.String("serverId")')">@server.String("name")</a></td>
+                <td>@server.String("serverAddress")</td>
+                <td>@account</td>
+                <td>@password</td>
+                <td>@server.String("remark")</td>
+                <td>
+                    <a class="fa fa-pencil mr5 p-f_blue" title="编辑" href="javascript:;" onclick="EditServer('@server.String("serverId")','@customerCode')"></a>
+                    <a class="fa fa-close mr5 p-f_red" title="删除" href="javascript:void(0)" tbname="ServerInfo" querystr="db.ServerInfo.distinct('_id',{'serverId':'@server.String("serverId")'})" onclick="CustomDeleteItem(this,reload);"></a>
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div class="yh-msg">
+        暂无服务器信息
+    </div>
+}

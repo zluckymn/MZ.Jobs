@@ -1,0 +1,62 @@
+﻿@{
+    Layout = "";
+    var customerCode = ViewData["customerCode"] as string;
+    var slectUserList = ViewData["slectUserList"] as List<BsonDocument>;
+}
+<div class="clearfix p-selectUser">
+    <div class="left">
+        <input type="text" id="key" value="" placeholder="搜索用户名称" /><a href="javascript:;" onclick="searchUser()" class="p-btn" style="margin-left:5px;">搜索</a>
+        <ul class="p-iuserList" id="iuserList"></ul>
+    </div>
+    <div class="right">
+        <h5>关键用户</h5>
+        <ul id="selectuser" class="clearfix p-selectuser">
+            @foreach(var user in slectUserList){
+                <li userId='@user.String("userId")'><a style="margin-right:5px" href='javascript:;' > @user.String("name")</a><a class="fa fa-close p-f_red" href='javascript:;' onclick='delUser(this)' ></a></li>  
+            }
+        </ul>
+    </div>
+</div>
+<script>
+    function selectuser(obj) {
+        if ($(obj).is(':checked')) {
+            if ($("#selectuser").find("li[userId=" + $(obj).attr("userId") + "]").length == 0)
+            {
+                var html = "<li userId='" + $(obj).attr("userId") + "' ><a style='margin-right:5px' href='javascript:;'>" + $(obj).attr("name") + "</a><a class='fa fa-close p-f_red' href='javascript:;' onclick='delUser(this)'></a></li>";
+                $("#selectuser").append(html);
+            }
+        } else {
+            $("#selectuser").find("li[userId=" + $(obj).attr("userId") + "]").remove();
+        }
+    }
+    function delUser(obj)
+    {
+        $(obj).closest("li").remove();
+    }
+    function searchUser() {
+        var key = $("#key").val();
+        var tbName = "CSSysUser";
+        var qu = "db.CSSysUser.distinct('_id',{'customerCode':'@customerCode'})";
+        var key = $("#key").val();
+        $.ajax({
+            url: "/Home/GetSingleTableJson?tbName="+tbName+"&qu="+qu+"&key="+key,
+            type: 'get',
+            error: function () {
+                layer.msg('未知错误，请联系服务器管理员，或者刷新页面重试!', { icon: 5 });
+            },
+            success: function (data) {
+                var html = "";
+                if (data.length > 0)
+                {
+                    for (var i = 0; i < data.length; i++) {
+                        html += "<li><input style='margin-right:5px;' type='checkbox' name='" + data[i].name + "' userId='" + data[i].userId + "' onclick='selectuser(this)' />" + data[i].name + "</li>";
+                    }
+                } else {
+                    html += "<li>未找到对应人员</li>";
+                }
+                $("#iuserList").html(html);
+            }
+        });
+    }
+</script>
+

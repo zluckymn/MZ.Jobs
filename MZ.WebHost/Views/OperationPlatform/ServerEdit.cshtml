@@ -1,0 +1,57 @@
+﻿@{
+    Layout = "";
+    var server = ViewData["server"] as BsonDocument;
+    var customerCode = ViewData["customerCode"] as string;
+    var updateQuery = "";
+    if (!server.IsNullOrEmpty())
+    {
+        updateQuery = "db.ServerInfo.distinct('_id',{'serverId':'" + server.String("serverId") + "'})";
+    }
+}
+<form>
+<input type="hidden" name="tbName" value="ServerInfo" />
+<input type="hidden" name="queryStr" value="@updateQuery" />
+<input type="hidden" name="customerCode" value="@customerCode" />
+<table width="100%" class="table-noBorder">
+    <tr>
+        <td>
+            名称:
+        </td>
+        <td>
+            <input type="text" name="name" value="@server.String("name")" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            服务器地址:
+        </td>
+        <td>
+            <input type="text" name="serverAddress" value="@server.String("serverAddress")" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            账号:
+        </td>
+        <td>
+            <input type="text" name="account" value="@server.String("account")" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            密码:
+        </td>
+        <td>
+            <input type="text" name="password" value="@server.String("password")" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            描述:
+        </td>
+        <td>
+            <input type="text" name="remark" value="@server.String("remark")" />
+        </td>
+    </tr>
+</table>
+</form>

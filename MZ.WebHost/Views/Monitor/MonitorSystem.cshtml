@@ -1,0 +1,269 @@
+﻿
+@{
+    ViewBag.Title = "MonitorSystem";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+    var health = ViewData["health"] as BsonDocument;
+    var exceptionLogList = ViewData["exceptionLogList"] as List<BsonDocument>;
+    var moduleList = ViewData["moduleList"] as List<BsonDocument>;
+    var fileData = ViewData["fileData"] as BsonDocument;
+}
+    <div class="p-title1">运行状态监控</div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body control_panel">
+                    <h5 class="p-title2">CPU占用</h5>
+                    <div class="clearfix">
+                        <div class="percent p-j-circleBar" num="@health.Decimal("cpu")"></div>
+                        <ul class="fl" style="margin-top:10px;">
+                            <li><span class="p-f_blue fb">@if (health.Decimal("cpu") > 80)
+                            { 
+                                <text> CPU负荷过大 </text>}
+                            else
+                            {
+                                <text> CPU状态良好 </text>
+                            }</span></li>
+                            <li>当前CPU占用：<span class="fb text-primary">@health.Decimal("cpu")%</span></li>
+                            <li>示警阈值：<span class="fb text-warning">80%</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body control_panel">
+                    <h5 class="p-title2">内存占用</h5>
+                    <div class="clearfix">
+                        <div class="percent p-j-circleBar" num="@health.Decimal("memory")"></div>
+                        <ul class="fl" style="margin-top:10px;">
+                            <li><span class="p-f_blue fb">
+                                    @if (health.Decimal("memory") > 80)
+                                    {
+                                        <text> 内存不足 </text>}
+                                    else
+                                    {
+                                        <text> 内存充足 </text>
+                                    }
+                                </span></li>
+                            <li>当前内存使用：<span class="fb text-primary">@health.Decimal("memory")%</span></li>
+                            <li>示警阈值：<span class="fb text-warning">80%</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default  bg-red" onclick="LoadFileData()">
+                <div class="panel-body">
+                    <h5 class="p-title2 p-f_white" style="margin-bottom:10px;">系统文件情况</h5>
+                    @*<h3 class="p-f_white">@health.Int("fileDownCount")</h3>*@
+                    <ul class="clearfix p-f_white" style="line-height:20px;">
+                        <li class="fl" style="width:110px;">文件上传：@fileData.Int("fileCount")</li>
+                        <li class="fl" style="width:110px;">上传失败：@fileData.Int("unUpFileCount")</li><br />
+                        <li class="fl" style="width:110px;">切图失败：@fileData.Int("unThumbFileCount")</li>
+                        <li class="fl" style="width:110px;">文件查看：@fileData.Int("fileViewCount")</li><br />
+                        <li class="fl" style="width:110px;">文件下载：@fileData.Int("fileDownCount")</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-default  bg-blue" onclick="LoadUseUser()">
+                <div class="panel-body" style="padding-bottom:49px;">
+                    <h5 class="p-title2 p-f_white" style="margin-bottom:10px;">周使用人次下降数量</h5>
+                    <h3 class="p-f_white">@health.Int("downUserCount")</h3>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body control_panel">
+                    <h5 class="p-title2">硬盘存储容量</h5>
+                    <div class="clearfix">
+                        <div class="percent p-j-circleBar" num="@health.Decimal("diskMemory")"></div>
+                        <ul class="fl" style="margin-top:10px;">
+                            <li><span class="text-warning fb">
+                                    @if (health.Decimal("diskMemory") > 80)
+                                    {
+                                        <text> 硬盘容量不足！ </text>}
+                                    else
+                                    {
+                                        <text> 硬盘容量充足！ </text>
+                                    }
+                                </span></li>
+                            <li>当前硬盘使用：<span class="fb text-warning">@health.Decimal("diskMemory")%</span></li>
+                            <li>示警阈值：<span class="fb text-warning">80%</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default" onclick="LoadViewTime()" >
+                <div class="panel-body control_panel">
+                    <h5 class="p-title2">系统功能页面响应时间</h5>
+                    <div class="clearfix">
+                        <div class="percent p-j-circleBar2" num="@health.Decimal("time")"></div>
+                        <ul class="fl" style="margin-top:10px;">
+                            <li><span class="p-f_blue fb">
+                                    @if (health.Decimal("actRunTime") > 3000)
+                                    {
+                                        <text> 页面响应缓慢 </text>}
+                                    else
+                                    {
+                                        <text> 页面响应迅速 </text>
+                                    }
+                                </span></li>
+                            <li>响应时间：<span class="fb text-primary">@health.String("actRunTime")ms</span></li>
+                            <li>示警阈值：<span class="fb text-warning">3000ms</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row panel bg-gray" style="border:none;">
+                <div class="col-md-5 p-problem">
+                    <div class="top bg-green">
+                        <h4>系统异常汇总</h4>
+                        <div>(问题个数：@exceptionLogList.Count 个)</div>
+                    </div>
+                    <div class="bottom bg-white pre-scrollable" style="height:337px;">
+                    @foreach (var module in moduleList)
+                    {
+                        <ul>
+                                <li class="clearfix" style=""><a moduleId='@module.String("moduleId")' onclick="LoadExcetion(this)">@module.String("name")</a><span>@module.String("percent")%</span></li>
+                                <li>
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style='width:@module.String("percent")%'>
+                                            <span class="sr-only">@module.String("percent")% Complete (info)</span>
+                                        </div>
+                                    </div>
+                                </li>
+                        </ul>
+                    }
+                        @*<ul>
+                            <li class="clearfix" style=""><span>其他</span><a>20%</a></li>
+                            <li>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+                                        <span class="sr-only">20% Complete (info)</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>*@
+                        <div class="bg-white" style="height:36px; border-radius:0 0 0 4px;"></div>
+                    </div>
+                </div>
+                <div class="col-md-7 p-problem_detail" id="exceptions">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="p-title1">用户访问分析</div>
+    <div class="row" >
+        <div class="col-md-12" id="orgs">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" id="users">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4" id="modules" >
+            
+        </div>
+        <div class="col-md-8" id="iusers">
+
+        </div>
+    </div>
+   
+<script>
+    $("a[moduleId]").first().click();
+    LoadOrgs(1, 1);
+    LoadUsers(1);
+    LoadIUsers(1)
+    LoadModules(0);
+    SetMenu(2, 1);
+    function LoadUseUser() {
+        var type = 1;
+        $.YH.box({
+            target: '/Monitor/MonitorUseUserChart?type=' + type + "&r=" + Math.random(),
+            title: "系统人员使用情况",
+            width: 1000,
+            buttonNames:[null,'关闭']
+        });
+    }
+    function LoadFileData() {
+        var type = 1;
+        $.YH.box({
+            target: '/Monitor/MonitorFileDataChart?type=' + type + "&r=" + Math.random(),
+            title: "文件情况",
+            width: 1200,
+            buttonNames: [null, '关闭']
+        });
+    }
+    function LoadFileDown() {
+        var type = 1;
+        $.YH.box({
+            target: '/Monitor/MonitorFileDownChart?type=' + type + "&r=" + Math.random(),
+            title: "系统文件下载情况",
+            width: 1000,
+            buttonNames: [null, '关闭']
+        });
+    }
+    function LoadViewTime() {
+        $.YH.box({
+            target: '/Monitor/MonitorViewTime?r=' + Math.random(),
+            title: "访问时间排行",
+            width: 1000,
+            buttonNames: [null, '关闭']
+        });
+    }
+    function LoadExcetion(obj) {
+        var moduleId = $(obj).attr("moduleId");
+        $("#exceptions").load("/Monitor/MonitorExceptionList?moduleId=" + moduleId + "&r=" + Math.random());
+    }
+    function LoadOrgs(type,order) {
+        $("#orgs").load("/Monitor/OrgAccessingRanking?type=" + type + "&order=" + order + "&r=" + Math.random());
+    }
+    function LoadUsers(order) {
+        var startDate = "";
+        var endDate = "";
+        if ($("#startDate").length>0) {
+            startDate = $("#startDate").val();
+        }
+        if($("#endDate").length>0){
+            endDate = $("#endDate").val();
+        }
+        $("#users").load("/Monitor/UserAccessingRanking?startDate=" + startDate + "&endDate="+ endDate + "&order=" + order + "&r=" + Math.random());
+    }
+    function LoadIUsers(order) {
+        var startDate = "";
+        var endDate = "";
+        if ($("#startDate1").length > 0) {
+            startDate = $("#startDate1").val();
+        }
+        if ($("#endDate1").length > 0) {
+            endDate = $("#endDate1").val();
+        }
+        $("#iusers").load("/Monitor/ImportUserAccessingRanking?startDate=" + startDate + "&endDate=" + endDate + "&order=" + order + "&r=" + Math.random());
+    }
+    function LoadModules(moduleId) {
+        var startDate = "";
+        var endDate = "";
+        if ($("#startDate2").length > 0) {
+            startDate = $("#startDate2").val();
+        }
+        if ($("#endDate2").length > 0) {
+            endDate = $("#endDate2").val();
+        }
+        $("#modules").load("/Monitor/ModuleAccessingActionRanking?startDate=" + startDate + "&endDate=" + endDate + "&moduleId=" + moduleId + "&r=" + Math.random());
+    }
+
+    $('.p-j-circleBar').circleBar({
+        radius: 35,  //半径
+        ringWidth: 5, //圆环宽度
+    });
+
+    $('.p-j-circleBar2').circleBar({
+        radius: 35,  //半径
+        ringWidth: 5, //圆环宽度
+        //unit: 'ms',
+        //circleBarBg: '#5bc8ff'
+    });
+</script>

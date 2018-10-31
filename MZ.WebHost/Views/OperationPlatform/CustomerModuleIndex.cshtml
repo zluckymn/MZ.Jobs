@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewBag.Title = "CustomerModule";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <a class="p-btn" href="javascript:;" onclick="EditModule('0')">创建模块</a>
+                <div id="moduleList">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    SetMenu(4, 1);
+    LoadList();
+    function LoadList() {
+        $("#moduleList").load("/OperationPlatform/CustomerModuleList?r=" + Math.random());
+    }
+    function EditModule(id) {
+        var title = "模块创建";
+        if (id != 0 && id != "0") {
+            title = "模块编辑";
+        }
+        $.YH.box({
+            target: '/OperationPlatform/CustomerModuleEdit?moduleId=' + id + "&r=" + Math.random(),
+            title: title,
+            width: 700,
+            ok: function () {
+                var formData = $(this).find("form").serialize();
+                $.ajax({
+                    url: "/Home/SavePostInfo",
+                    type: 'post',
+                    error: function () {
+                        layer.msg('未知错误，请联系服务器管理员，或者刷新页面重试!', { icon: 5 });
+                    },
+                    data: formData,
+                    success: function (data) {
+                        if (data.Success) {
+                            layer.msg('保存成功！', { icon: 6 });
+                            LoadList();
+                        }
+                        else {
+                            layer.msg(data.Message, { icon: 5 });
+                        }
+                    }
+                });
+            }
+        });
+    }
+</script>

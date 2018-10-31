@@ -1,0 +1,84 @@
+﻿
+@{
+    ViewBag.Title = "MonitorEngineeringList";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+    var datas = ViewData["datas"] as List<BsonDocument>;
+    var nowDate = DateTime.Now.Date;
+    DateTime startWeek = nowDate.AddMonths(-1); //最近一月
+    DateTime endWeek = nowDate; //最近一月
+    string startStr = startWeek.ToString("yyyy-MM-dd");
+    string endStr = endWeek.ToString("yyyy-MM-dd");
+}
+<div>
+    <div class="p-title1">清单监控</div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-title bg-purple clearfix">
+                    <h5 class="p-title2 fl">项目应用统计</h5>
+                    <div class="date-picker">
+                        <i class="fa fa-calendar"></i><input type="text" id="startDate" value="@startStr" onclick="WdatePicker()" onchange="LoadProjUseList()" />&nbsp;-&nbsp;&nbsp;
+                        <i class="fa fa-calendar"></i><input type="text" id="endDate" value="@endStr" onclick="WdatePicker()" onchange="LoadProjUseList()" />
+                    </div>
+                </div>
+                <div id="p-j-projUse" class="table-responsive pre-scrollable" style="padding:10px; max-height:395px;">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-title bg-red clearfix">
+                    <h5 class="p-title2 fl">分部分项修改统计表</h5>
+                    @*<div class="date-picker"><i class="fa fa-calendar"></i><input type="text" id="date" value="@date" onclick="WdatePicker()" onchange="LoadMeetingStatusCount()" /></div>*@
+                </div>
+                <div id="p-j-ItemCount" class="table-responsive pre-scrollable" style="padding:10px; max-height:395px;">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-title bg-green clearfix">
+                    <h5 class="p-title2">分部分项详情表</h5>
+                    @*<div class="date-picker"><i class="fa fa-calendar"></i><input type="text" id="date1" value="@date1" onclick="WdatePicker()" onchange="LoadMeetingMatter()" /></div>*@
+                    
+                </div>
+                <div style="padding-top:10px; padding-left:15px; font-weight:bold;">
+                    分部分项：&nbsp;&nbsp;
+                    <select id="modItemId" onchange="LoadItemDetail()" style="height:30px; width:200px;">
+                        @foreach (var data in datas)
+                        {
+                            <option value="@data.String("modItemId")">@data.String("modItemName")</option>
+                        }
+                    </select>
+                </div>
+                <div id="p-j-ItemDetail" class="table-responsive pre-scrollable" style="padding:10px; max-height:395px;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    SetMenu(2, 6);
+    LoadProjUseList();
+    LoadItemCount();
+    LoadItemDetail();
+    function LoadProjUseList() {
+        var startDate = $("#startDate").val();
+        var endDate = $("#endDate").val();
+        $("#p-j-projUse").load("/Monitor/MonitorProjUseList?startDate=" + startDate + "&endDate=" + endDate + "&r=" + Math.random());
+    }
+    function LoadItemCount() {
+        $("#p-j-ItemCount").load("/Monitor/MonitorQDItemUpdate?r=" + Math.random());
+    }
+    function LoadItemDetail() {
+        var modItemId = $("#modItemId").val();
+        $("#p-j-ItemDetail").load("/Monitor/MonitorQDItemUpdateDetail?modItemId=" + modItemId + "&r=" + Math.random());
+    }
+</script>
+

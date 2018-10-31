@@ -1,0 +1,168 @@
+﻿@{
+    Layout = "";
+    var statementId = (int)ViewData["statementId"];
+    var header = ViewData["header"] as BsonDocument;
+    var nodePid = ViewData["nodePid"] as string;
+    var methodList = ViewData["methodList"] as List<BsonDocument>;
+    var updateQuery = "";
+    var guid = Guid.NewGuid().ToString();
+    if (!header.IsNullOrEmpty())
+    {
+        nodePid = header.String("nodePid");
+        guid = header.String("guid");
+        updateQuery = "db.StatementHeader.distinct('_id',{'headerId':'" + header.String("headerId") + "'})";
+    }
+}
+<form>
+<input type="hidden" name="tbName" value="StatementHeader" />
+<input type="hidden" name="queryStr" value="@updateQuery" />
+<input type="hidden" name="nodePid" value="@nodePid" />
+<input type="hidden" name="statementId" value="@statementId" />
+<input type="hidden" name="guid" value="@guid" />
+<table width="100%" class="table-noBorder">
+    <tr>
+    <td>
+        名称:
+    </td>
+    <td>
+        <input type="text" name="name" value="@header.String("name")" />
+    </td>
+    </tr>
+    <tr>
+    <td>
+        读取方式:
+    </td>
+    <td>
+        <select name="methodId" onchange="changeMethod(this)" style="width:148px;">
+        @foreach (var method in methodList)
+        {
+            <option @if(method.String("methodId")==header.String("methodId")){ <text> selected="selected" </text> } value="@method.String("methodId")" methodName="@method.String("methodName")" >@method.String("name")</option>
+        }
+        </select>
+    </td>
+    </tr>
+    <tr>
+        <td>
+            数据存储格式:
+        </td>
+        <td>
+            <select name="dataType" style="width:148px;">
+                <option value="1">字符串</option>
+            </select>
+        </td>
+    </tr>
+@*    <tr>
+    <td>
+        验证方式:
+    </td>
+    <td>
+        <input type="text" name="verifyId" value="@header.String("verifyId")" />
+    </td>
+    </tr>*@
+    <tr>
+        <td>
+            存储字段名:
+        </td>
+        <td>
+            <input type="text" name="storageFieldName" value="@header.String("storageFieldName")" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            读取字段名:
+        </td>
+        <td>
+            <input type="text" name="readFieldName" value="@header.String("readFieldName")" />
+        </td>
+    </tr>
+    <tr>
+    <td>
+        方法名称:
+    </td>
+    <td>
+        <input type="text" name="methodName" value="@header.String("methodName")" />
+    </td>
+    </tr>
+    <tr>
+        <td>
+            数据源获取接口名称:
+        </td>
+        <td>
+            <input type="text" name="dataSourcePortName" value="@header.String("dataSourcePortName")" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            分组条件:
+        </td>
+        <td>
+            <input type="text" name="sortField" value="@header.String("sortField")" />
+        </td>
+    </tr>
+    <tr>
+
+    </tr>
+@*    <tr>
+    <td>
+        查询方法参数:
+    </td>
+    <td>
+        <input type="text" name="queryStr" value="@header.String("queryStr")" />
+    </td>
+    </tr>*@
+    <tr>
+    <td>
+        固定值:
+    </td>
+    <td>
+        <input type="text" name="fixValue" value="@header.String("fixValue")" />
+    </td>
+    </tr>
+    <tr>
+    <td>
+        主表名:
+    </td>
+    <td>
+        <input type="text" name="mainTbName" value="@header.String("mainTbName")" />
+    </td>
+    </tr>
+    <tr>
+    <td>
+        涉及的外键表名:
+    </td>
+    <td>
+        <input type="text" name="foreignTbName" value="@header.String("foreignTbName")" />
+    </td>
+    </tr>
+    <tr>
+    <td>
+        与主表中对应的外键名称:
+    </td>
+    <td>
+        <input type="text" name="foreignKeyName" value="@header.String("foreignKeyName")" />
+    </td>
+    </tr>
+    <tr>
+    <td>
+        是否显示:
+    </td>
+    <td>
+        <input type="radio" name="isShow" value="1" @if (header.Int("isShow") == 1 || header.Int("isShow") == 0)
+                                                   { <text> checked="checked" </text>  } />是
+        <input type="radio" name="isShow" value="2" @if (header.Int("isShow") == 2)
+                                                   { <text> checked="checked" </text>  }/>否
+    </td>
+    </tr>
+</table>
+</form>
+<script>
+    function changeMethod(obj) {
+        var methodId = $(obj).val();
+        if (methodId != 1) {
+            var methodName = $(obj).find("option:selected").attr("methodName");
+            $("input[name=methodName]").val(methodName);
+        } else {
+            $("input[name=methodName]").val('');
+        }
+    }
+</script>

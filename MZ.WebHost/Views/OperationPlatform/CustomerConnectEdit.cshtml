@@ -1,0 +1,159 @@
+﻿@using Yinhe.ProcessingCenter.Document
+@{ 
+    var customerCode = ViewData["customerCode"] as string;
+    var customerConnect = ViewData["customerConnect"] as BsonDocument;
+    var fileRelList = ViewData["fileRelList"] as List<BsonDocument>;
+    var fileList = ViewData["fileList"] as List<BsonDocument>;
+    var updateQuery = "";
+    if (!customerConnect.IsNullOrEmpty())
+    {
+        updateQuery = "db.CustomerConnect.distinct('_id',{'connectId':'" + customerConnect.String("connectId") + "'})";
+    }
+}
+<form>
+    <input type="hidden" name="tbName" value="CustomerConnect" />
+    <input type="hidden" name="queryStr" value="@updateQuery" />
+    <input type="hidden" name="customerCode" value="@customerCode" />
+    <input type="hidden" id="fileTypeId" name="fileTypeId" value="0" />
+    <input type="hidden" id="fileObjId" name="fileObjId" value="0" />
+    <input type="hidden" id="keyValue" name="keyValue" value="0" />
+    <input type="hidden" id="tableName" name="tableName" value="" />
+    <input type="hidden" id="keyName" name="keyName" value="" />
+    <input type="hidden" id="uploadType" name="uploadType" value="" />
+    <input type="hidden" id="delFileRelIds" name="delFileRelIds" value="" />
+    <input type="hidden" id="uploadFileList" name="uploadFileList" />
+    <input type="hidden" id="fileSaveType" name="fileSaveType" value="multiply" />
+    <input type="hidden" id="uploadUUID" />
+    <table width="100%" class="table-noBorder mb10 table-hover" style="border-bottom:1px dotted #aaa;">
+        <tr>
+            <td width="100">
+                访问地址:
+            </td>
+            <td>
+                <input type="text" style="width:96%" name="address" value="@customerConnect.String("address")" />
+            </td>
+            <td>
+                账号:
+            </td>
+            <td>
+                <input type="text" style="width:90%" name="account" value="@customerConnect.String("account")" />
+            </td>
+            <td width="100">
+                密码:
+            </td>
+            <td>
+                <input type="text" style="width:90%" name="password" value="@customerConnect.String("password")" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                VPN地址:
+            </td>
+            <td>
+                <input type="text" style="width:96%" name="vpnAddress" value="@customerConnect.String("vpnAddress")" />
+            </td>
+            <td>
+                VPN账号:
+            </td>
+            <td>
+                <input type="text" style="width:90%" name="vpnAccount" value="@customerConnect.String("vpnAccount")" />
+            </td>
+            <td>
+                VPN密码:
+            </td>
+            <td>
+                <input type="text" style="width:90%" name="vpnPassword" value="@customerConnect.String("vpnPassword")" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                堡垒机地址:
+            </td>
+            <td>
+                <input type="text" style="width:96%" name="bljAddress" value="@customerConnect.String("bljAddress")" />
+            </td>
+            <td>
+                堡垒机账号:
+            </td>
+            <td>
+                <input type="text" style="width:90%" name="bljAccount" value="@customerConnect.String("bljAccount")" />
+            </td>
+            <td>
+                堡垒机密码:
+            </td>
+            <td>
+                <input type="text" style="width:90%" name="bljPassword" value="@customerConnect.String("bljPassword")" />
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">描述:</td>
+            <td colspan="5">
+                <textarea name="remark" style="width:98%;" >@customerConnect.String("remark")</textarea>
+            </td>
+        </tr>
+    </table>
+    <a class="p-btn p-btn_w" href="javascript:;" uploadtype="2" filetypeid="1" fileobjid="100" keyvalue="@customerConnect.String("connectId")" tablename="CustomerConnect" keyname="connectId" 
+       _uuid="" onclick='UploadFilesNew(this,"true","p-j-fileList")' >上传软件安装包</a>
+    <table id="p-j-fileList" width="100%" class="table table-bordered table-condensed" style="margin-top:5px;">
+        <thead>
+            <tr class="p-table_head">
+                <td>文件名</td>
+                <td>后缀</td>
+                <td>大小</td>
+                <td>上传人</td>
+                <td>操作</td>
+            </tr>
+        </thead>
+        @foreach (var file in fileList)
+        {
+            var fileRelId = fileRelList.FirstOrDefault(c => c.String("fileId") == file.String("fileId")).String("fileRelId");
+            <tr>
+                <td>
+                    <a href="javascript:void(0);" onclick='@FileCommonOperation.GetClientOnlineRead(file)'>
+                        @file.String("name")</a>
+                </td>
+                <td>@file.String("ext")</td>
+                <td>@file.String("size")</td>
+                <td>@file.CreateUserName()</td>
+                <td>
+                    <a href="javascript:void(0);" class="p-f_blue" onclick='@FileCommonOperation.GetClientDownLoad(file)'>
+                        下载</a>
+                    <a href="javascript:void(0);" class="p-f_red" onclick='DeleteFiles("@fileRelId",RemoveTR,this)'>
+                        删除</a>
+                </td>
+            </tr>
+        }
+    </table>
+</form>
+<script>
+    function RemoveTR(obj) {
+        $(obj).closest("tr").remove();
+    }
+    function addFileTr() {
+        var myDate = new Date();
+        var html = "";
+        html += '<tr>';
+        html += '<td><div class="tb_con"> <a href="javascript:void(0);" class="gray yh-f_gray" onclick=\'alertRead()\'>';
+        html += '<img src="/Content/images/error.png" style="visibility: inherit" />'
+        html += FileName + FileEXT;
+        html += '</a></div></td><td align="center"><div class="tb_con">';
+        html += FileSize;
+        html += '</div></td> <td align="center"><div class="tb_con">';
+        html += '';
+        html += '</div></td> <td align="center"><div class="tb_con">';
+        html += myDate.getFullYear();
+        html += '-';
+        html += myDate.getMonth() + 1;
+        html += '-';
+        html += myDate.getDate();
+        html += '</div></td><td align="center"><div class="tb_con">';
+        if (fileTableId.indexOf("cover") != -1) {
+            html += '<input type="radio" name="imgFirst" value="1" fileTableId="' + fileTableId + '" onclick=\'SetCoverImageNew("' + FileMathNum + '",this);\' />设置封面图 &nbsp;'
+        }
+        html += ' ';
+        html += '<a href="javascript:void(0);"class="gray yh-f_gray" onclick=\'alertDown();\'> 下载</a>';
+        html += ' <a href="javascript:void(0);" class="red yh-f_red" Num="' + FileMathNum + '" path="' + FilePath + '" onclick=\'delTr(this,0)\'> &nbsp;删除</a>';
+        html += '</div></td></tr>';
+        $("#" + fileTableId).find('tr:last').after(html);
+    }
+</script>

@@ -1,0 +1,73 @@
+﻿@{
+    Layout = "";
+    var meetingList = ViewData["meetingList"] as List<BsonDocument>;
+    var index = 0;
+    
+ }
+@if (meetingList.Count > 0)
+    {
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>序号</th>
+                <th>会议名称</th>
+                <th>版本</th>
+                <th>会议状态</th>
+                <th>会议上会时间</th>
+                <th>会议完成时间</th>
+                <th>会议开始时间</th>
+                <th>会议结束时间</th>
+                <th>所属地块/项目</th>
+                <th>所属城市公司</th>
+                <th>是否启用</th>
+            </tr>
+        </thead>
+        @foreach (var meeting in meetingList)
+        {
+            var name = string.Format("{0}-{1}", meeting.String("landProjName"), meeting.String("name"));
+            var version = string.Format("V{0}", meeting.String("version"));
+            var isUse = meeting.Int("valid") == 1 ? "是" : "否";
+            <tr>
+                <td>
+                    @(++index)
+                </td>
+                <td>
+                    @name
+                </td>
+                <td>
+                    @version
+                </td>
+                <td>
+                    @meeting.String("statusName")
+                </td>
+                <td>
+                    @meeting.String("startDate")
+                </td>
+                <td>
+                    @meeting.String("endDate")
+                </td>
+                <td>
+                    @meeting.String("startTime")
+                </td>
+                <td>
+                    @meeting.String("endTime")
+                </td>
+                <td>
+                    @meeting.String("landProjName")
+                </td>
+                <td>
+                    @meeting.String("companyName")
+                </td>
+                <td>
+                    @isUse
+                </td>
+            </tr>
+        }
+    </table>
+}else
+{
+    <div>
+        暂无数据！
+    </div>
+}
+

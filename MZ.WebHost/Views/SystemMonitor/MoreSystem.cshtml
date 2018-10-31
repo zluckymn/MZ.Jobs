@@ -1,0 +1,174 @@
+﻿
+@{
+    ViewBag.Title = "MoreSystem";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+     
+}
+    <div class="p-title1">分布式系统站点集合</div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <img class="lazy" style="padding:2px" width="300" height="150" src="~/Content/images/systemImg/jenkins.png" />
+                <div class="panel-body control_panel">
+                    <h5 class="p-title2"><a href="http://192.168.185.173:8900/" target="_blank">Jenkins</a></h5>
+
+                    <div class="clearfix">
+                        <div>
+
+                        </div>
+                        <ul class="fl">
+                            <li>自动化发布</li>
+                            <li>用于快速站点发布</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <img class="lazy" style="padding:2px" width="300" height="150" src="~/Content/images/systemImg/grokdebugger.jpg" />
+                <div class="panel-body control_panel">
+                    <h5 class="p-title2"><a href="http://grokdebug.herokuapp.com/" target="_blank">Grok Debugger</a></h5>
+                    <div class="clearfix">
+
+                        <ul class="fl" style="margin-top:10px;">
+
+                            <li>Grok 调试</li>
+                            <li>用于logstash字段解析</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <img class="lazy" style="padding:2px" width="300" height="150" src="~/Content/images/systemImg/rancher.png" />
+                <div class="panel-body control_panel">
+                    <h5 class="p-title2"><a href="http://192.168.185.173:8080/env/1a5/apps/stacks" target="_blank">Rancher</a></h5>
+                    <div class="clearfix">
+
+                        <ul class="fl" style="margin-top:10px;">
+
+                            <li>微服务编排工具</li>
+                            <li>用于后续进行docker服务编排，管理k8s</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <img class="lazy" style="padding:2px" width="300" height="150" src="~/Content/images/systemImg/Kibana.png" />
+                <div class="panel-body control_panel">
+                    <h5 class="p-title2"><a href="http://192.168.185.173:5601/app/kibana#/home?_g=()" target="_blank">Kibana</a></h5>
+                    <div class="clearfix">
+
+                        <ul class="fl">
+
+                            <li>分布式日志平台</li>
+                            <li>用户汇总各分布式系统的日志集中展示</li>
+                            <li><a href="https://www.cnblogs.com/cjsblog/p/9476813.html" target="_blank">https://www.cnblogs.com/cjsblog/p/9476813.html</a></li>
+                            <li><a href="https://www.cnblogs.com/moonlightL/p/7764919.html" target="_blank">https://www.cnblogs.com/moonlightL/p/7764919.html</a></li>
+                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <img class="lazy" style="padding:2px" width="300" height="150" src="~/Content/images/systemImg/ElasticSearch.png" />
+                <div class="panel-body control_panel">
+                    <h5 class="p-title2"><a href="http://192.168.185.173:9200//_search?pretty" target="_blank">ElasticSearch</a></h5>
+                    <div class="clearfix">
+
+                        <ul class="fl">
+
+                            <li>搜索索引数据库</li>
+                            <li>ELK组件之一，通过NlogTCP方式发送到Logstash传入ElasticSearch通过kibana进行集中展示</li>
+                            <li><a href="https://es.xiaoleilu.com/" target="_blank">https://es.xiaoleilu.com/</a></li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="panel panel-default">
+                <img class="lazy" style="padding:2px" width="300" height="150" src="~/Content/images/systemImg/docker.jpg" />
+                <div class="panel-body control_panel">
+                    <h5 class="p-title2"><a href="http://192.168.185.173:9000/#/" target="_blank">DockerUI</a></h5>
+                    <div class="clearfix">
+
+                        <ul class="fl" style="margin-top:10px;">
+
+                            <li>Docker服务管理</li>
+                            <li>通过可视化方式集中管理docker服务</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <img class="lazy" style="padding:2px" width="300" height="150" src="~/Content/images/systemImg/aspnetcore.png" />
+                <div class="panel-body control_panel">
+                    <h5 class="p-title2"><a href="http://192.168.99.163:8000/swagger/index.html" target="_blank">163Core站点Swagger接口文档</a></h5>
+                    <div class="clearfix">
+
+                        <ul class="fl">
+                            <li>Swagger接口文档</li>
+                            <li>系统通过.netCore方式开发，以swagger方式开放接口文档</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="panel panel-default">
+                <img class="lazy" style="padding:2px" width="300" height="150" src="~/Content/images/systemImg/RabbitMQ.png" />
+                <div class="panel-body control_panel">
+                    <h5 class="p-title2"><a href="http://192.168.185.173:15672/" target="_blank">RabbitMQ</a></h5>
+                    <div class="clearfix">
+
+                        <ul class="fl">
+                            <li>队列站点</li>
+                            <li>RabbitMQ队列服务可视化</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="panel panel-default">
+                <img class="lazy" style="padding:2px" width="300" height="150" src="~/Content/images/systemImg/consul.png" />
+                <div class="panel-body control_panel">
+                    <h5 class="p-title2"><a href="http://192.168.185.173:8500" target="_blank">Consul</a></h5>
+                    <div class="clearfix">
+
+                        <ul class="fl">
+                            <li>服务注册服务发现</li>
+                            <li>用于后续的接口服务发现与注册</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    
+
+
+<script>
+   
+    SetMenu(3, 4);
+   
+</script>

@@ -1,0 +1,492 @@
+﻿@{
+    var backgroundJobList = ViewData["backgroundJobList"] as List<BsonDocument>;
+    var customerList = ViewData["customerList"] as List<BsonDocument>;
+    var statementList = ViewData["statementList"] as List<BsonDocument>;
+    var customerCode = ViewData["customerCode"] as string;
+    var index = 0;
+    Layout = "";
+    var title = "创建原始调度事务";
+    var tableName = "BackgroundJob";
+    if (!string.IsNullOrEmpty(customerCode))
+    {
+        title = "创建客户调度事务";
+    }
+    var templet = ViewData["templet"] as List<BsonDocument>;
+}
+<style>
+    .table tbody tr td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+<div class="fr p-f_red fb" style="margin-top:5px;"><i class="fa fa-warning mr5"></i>底色不同的为重要事务，请谨慎操作！</div>
+<a class="p-btn p-btn_white_1" href="javascript:;" onclick="EditJob('0','@customerCode')">@title</a>
+@*<a class="p-btn p-btn_white_1" href="javascript:;" onclick="SynJob('@customerCode')">同步job事务</a>*@
+@*
+    type==2 编辑
+    type==3 创建 从原始调度导入
+*@
+@if (!string.IsNullOrEmpty(customerCode) && templet != null && templet.Count > 0)
+{
+    <a class="p-btn p-btn_white_1" href="javascript:;" onclick="modalShow()" data-target="#myModal">导入</a>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">导入调度事务</h4>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <div class="head">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" value="" id="tempCbs">
+                                    原始调度任务 <span data-id="">(@templet.Count 条)</span>
+                                </label>
+                                <div class="mcontent">
+                                    @{
+                                        var row = 3;
+                                        var col = Math.Ceiling(templet.Count / (decimal)row);
+                                        var ide = 0;
+                                        <table width="100%" class="table table-bordered table-hover table-condensed" style="margin: 3px 0 0 0; table-layout: fixed;">
+                                            @for (int i = 0; i < col; i++)
+                                            {
+                                                <tr>
+                                                    @for (int j = 0; j < row; j++)
+                                                    {
+                                                        ide = i * row + j;
+                                                        if (ide < templet.Count)
+                                                        {
+                                                            <td>
+                                                                <div class="checkbox-inline">
+                                                                    <label class="checkbox-inline">
+                                                                        <input type="checkbox" class="job" value="@templet[ide].String("jobId")">
+                                                                        @templet[ide].String("name")
+                                                                    </label>
+                                                                </div>
+                                                            </td>
+                                                        }
+                                                    }
+                                                </tr>
+                                            }
+                                        </table>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @if (customerList != null && customerList.Count > 0)
+                    {
+                        Dictionary<string, int> customerJobs = ViewData["customerJob"] as Dictionary<string, int>;
+                        foreach (var customer in customerList)
+                        {
+                            string custCode = customer.String("customerCode");
+                            int custCount = 0;
+                            if (customerJobs != null)
+                            {
+                                customerJobs.TryGetValue(custCode, out custCount);
+                            }
+                            if (custCode != customerCode && custCount > 0)
+                            {
+                                <div>
+                                    <div class="head">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="hidden" data-id="@customer.String("customerCode")" value="@customer.String("name")" />
+                                                <input type="checkbox" class="headcust" value="@customer.String("customerCode")">
+                                                @customer.String("name") <span data-id="@customer.String("customerCode")">(@custCount 条)</span>
+                                            </label>
+                                            <div class="mcontent">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="btnCancel">取消</button>
+                    <button type="button" class="btn btn-primary" id="btnImport">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+                                        }
+<div>
+    @if (backgroundJobList.Count > 0)
+    {
+    <table width="100%" class="table table-bordered table-hover" style="margin-top:10px;table-layout:fixed;">
+        <thead>
+            <tr>
+                <th align="left" width="5%">序号</th>
+                <th align="left">名称</th>
+                @*<th align="left">关联报表</th>*@
+                @*<th align="left">所在程序集</th>
+                <th align="left">类名</th>*@
+                <th align="left" width="30%">描述</th>
+                @*<th align="left">启动参数</th>*@
+                <th align="left">cron表达式</th>
+                <th align="left">cron表达式描述</th>
+                <th align="left">上次运行时间</th>
+                <th align="left">下次运行时间</th>
+                @if (!string.IsNullOrEmpty(customerCode))
+                    {
+                <th align="left" width="7%" style="text-align: center;">启动/停止</th>
+                    }
+                <th align="left" width="5%" style="text-align: center;">操作</th>
+            </tr>
+        </thead>
+        @foreach (var backgroundJob in backgroundJobList.OrderByDescending(c=>c.Int("jobType")>=1).ThenBy(c=>c.Int("jobType")))
+        {
+            index++;
+            var className = "";
+            if (backgroundJob.Int("jobType") == 1 || backgroundJob.Int("jobType") == 2)
+            {
+                className = "danger";
+            }
+            //var statement = statementList.FirstOrDefault(c =>c.String("statementId")==backgroundJob.String("statementId"));
+            //var statementName = statement.IsNullOrEmpty() ? "无" : statement.String("name");
+            //class="warning danger info"黄红蓝
+        <tr class="@className">
+            <td>@index</td>
+            <td>@backgroundJob.String("name")</td>
+            @*<td>@statementName</td>*@
+            @*<td>@backgroundJob.String("assemblyName")</td>
+            <td>@backgroundJob.String("className")</td>*@
+            <td>@backgroundJob.String("descrption")</td>
+            @*<td>@backgroundJob.String("jobArgs")</td>*@
+            <td>@backgroundJob.String("cron")</td>
+            <td>@backgroundJob.String("cronDesc")</td>
+            <td>@backgroundJob.String("lastRunTime")</td>
+            <td>@backgroundJob.String("nextRunTime")</td>
+            @if (!string.IsNullOrEmpty(customerCode))
+                    {
+                        var customer = customerList.FirstOrDefault(c => c.String("customerCode") == backgroundJob.String("customerCode"));
+            <td style="text-align: center;">
+                @{
+                                var s = backgroundJob.Int("state");
+                                switch (s)
+                                {
+                                    case 0:
+                    <a  id="@backgroundJob.String("jobId")" href="javascript:;" onclick="changeStatus('@backgroundJob.String("jobId")', '1', '@backgroundJob.String("customerCode")')">点击运行</a>
+                                        break;
+                                    case 1:
+                    <a class="fa fa-check-circle ml5 p-f_green1" id="@backgroundJob.String("jobId")" href="javascript:;" onclick="changeStatus('@backgroundJob.String("jobId")', '0', '@backgroundJob.String("customerCode")')"></a>
+                                        break;
+                                    case 3:
+                    <a id="@backgroundJob.String("jobId")" href="javascript:;" onclick="changeStatus('@backgroundJob.String("jobId")', '1', '@backgroundJob.String("customerCode")')">启动中</a>
+                                        break;
+                                    case 5:
+                    <a id="@backgroundJob.String("jobId")" href="javascript:;" onclick="changeStatus('@backgroundJob.String("jobId")', '0', '@backgroundJob.String("customerCode")')">停止中</a>
+                                        break;
+                                }
+                }
+            </td>
+                                }
+            <td style="text-align: center;">
+                <a class="fa fa-pencil mr5 p-f_blue" title="编辑" href="javascript:;" onclick="EditJob('@backgroundJob.String("jobId")','@customerCode')"></a>
+                &nbsp;
+                @if (backgroundJob.Int("jobType") != 1)
+                {
+                    <a class="fa fa-close mr5 p-f_red" title="删除" href="javascript:void(0)" tbname="@tableName" querystr="db.@{@tableName}.distinct('_id',{'jobId':'@backgroundJob.String("jobId")'})" onclick="CustomDeleteItem(this,reload);"></a>
+                }     
+            </td>
+        </tr>
+    }
+    </table>
+    }
+    else
+    {
+    <div class="yh-msg">
+        暂无事务信息
+    </div>
+    }
+</div>
+
+<script>
+    function changeStatus(jobId,status,customerCode)
+    {
+        var queryStr = "db.BackgroundJob.distinct('_id',{'jobId':'" + jobId + "'})"
+        var formData = "tbName=BackgroundJob&queryStr=" + queryStr + "&state=" + status;
+        $.ajax({
+            url: "/Home/SavePostInfo",
+            type: 'post',
+            error: function () {
+                layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+                //$.tmsg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { infotype: 2 });
+            },
+            beforeSend:function() {
+                console.log(status);
+                if (status==1) {
+                    console.log("启动中");
+                    $("#"+jobId).text("启动中");
+                }else if (status==0) {
+                    console.log("停止中");
+                    $("#"+jobId).text("停止中");
+                }
+            },
+            data: formData,
+            success: function (data) {
+                if (data.Success) {
+                    layer.msg("保存成功！", { icon: 6 });
+                    //$.tmsg("m_jfw", "保存成功！", { infotype: 1 });
+                    reload();
+                    if (customerCode != "")
+                    {
+                        UpdateCustomer(customerCode);
+                    }
+                }
+                else {
+                    layer.msg(data.Message, { icon: 5 });
+                    //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                }
+            }
+        });
+    }
+    //function SynJob(customerCode)
+    //{
+    //    $.YH.box({
+    //        target: '/OperationPlatform/BackgroundJobEdit?jobId=' + id + '&customerCode=' + customerCode + '&r=' + Math.random(),
+    //        title: '同步job事务',
+    //        width: 360,
+    //        ok: function () {
+    //            var customerIds = "";
+    //            $("#customerList").find("input[type=checked]")
+    //            var jobIds = "";
+    //            $("#jobList").find("input[]")
+    //            $.ajax({
+    //                url: "/Home/SavePostInfo",
+    //                type: 'post',
+    //                error: function () {
+    //                    layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+    //                },
+    //                data: formData,
+    //                success: function (data) {
+    //                    if (data.Success) {
+    //                        layer.msg("保存成功！", { icon: 6 });
+    //                        reload();
+    //                        if (customerCode != "") {
+    //                            UpdateCustomer(customerCode);
+    //                        }
+    //                    }
+    //                    else {
+    //                        layer.msg(data.Message, { icon: 5 });
+    //                    }
+    //                }
+    //            });
+    //        }
+    //    });
+    //}
+    function EditJob(id, customerCode) {
+        var action = "创建";
+        if (id != 0 && id != "0") {
+            action = "编辑";
+        }
+        var title = "客户调度事务";
+        if (customerCode == "") {
+            title = "原始调度事务";
+        }
+        $.YH.box({
+            target: '/OperationPlatform/BackgroundJobEdit?jobId=' + id + '&customerCode=' + customerCode + '&r=' + Math.random(),
+            title: title + action,
+            width: 360,
+            ok: function () {
+                var formData = $(this).find("form").serialize();
+                var customerCode = $(this).find("input[name=customerCode]").val();
+                $.ajax({
+                    url: "/Home/SavePostInfo",
+                    type: 'post',
+                    error: function () {
+                        layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+                        //$.tmsg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { infotype: 2 });
+                    },
+                    data: formData,
+                    success: function (data) {
+                        if (data.Success) {
+                            layer.msg("保存成功！", { icon: 6 });
+                            //$.tmsg("m_jfw", "保存成功！", { infotype: 1 });
+                            reload();
+                            if (customerCode != "")
+                            {
+                                UpdateCustomer(customerCode);
+                            }
+                        }
+                        else {
+                            layer.msg(data.Message, { icon: 5 });
+                            //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                        }
+                    }
+                });
+            }
+        });
+    }
+    function UpdateCustomer(customerCode) {
+        var tbName = "CustomerInfo";
+        var queryStr = "db.CustomerInfo.distinct('_id',{'customerCode':'" + customerCode + "'})";
+        var formData = "tbName=" + tbName + "&queryStr=" + queryStr + "&needChange=1";
+        $.ajax({
+            url: "/Home/SavePostInfo",
+            type: 'post',
+            error: function () {
+                layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+                //$.tmsg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { infotype: 2 });
+            },
+            data: formData,
+            success: function (data) {
+                if (data.Success) {
+                    //layer.msg("保存成功！", { icon: 6 });
+                    //$.tmsg("m_jfw", "保存成功！", { infotype: 1 });
+                    //$("#selectList").find("li.active").click();
+                }
+                else {
+                    layer.msg(data.Message, { icon: 5 });
+                    //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                }
+            }
+        });
+    }
+    function ImportJob(type) {
+        var select = $("#tempJob option:checked");
+        var name = select.val();
+        var id = select.attr("id");
+        if (id == null || typeof(id) == "undefined")
+            return;
+        $.YH.box({
+            target: '/OperationPlatform/BackgroundJobEdit?jobId=' + id + "&type=3&r=" + Math.random(),
+            title: "导入原始事务："+name,
+            width: 360,
+            afterLoaded:function() {
+                var code = $("#selectList").find("li.active").attr("code");
+                $("select[name=customerCode]").val(code);
+            },
+            ok: function () {
+                var formData = $(this).find("form").serialize();
+                var customerCode = $(this).find("select[name=customerCode]").val();
+                $.ajax({
+                    url: "/Home/SavePostInfo",
+                    type: 'post',
+                    error: function () {
+                        layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+                        //$.tmsg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { infotype: 2 });
+                    },
+                    data: formData,
+                    success: function (data) {
+                        if (data.Success) {
+                            layer.msg("保存成功！", { icon: 6 });
+                            //$.tmsg("m_jfw", "保存成功！", { infotype: 1 });
+                            reload();
+                            if(type==2 || type=="2")
+                            {
+                                UpdateCustomer(customerCode);
+                            }
+                        }
+                        else {
+                            layer.msg(data.Message, { icon: 5 });
+                            //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    $(".headcust").change(function() {
+        var a = $(this).is(':checked');
+        var mcontent = $(this).parent().parent().find(".mcontent");
+        if (a) {
+            var code = $(this).val();
+            $.ajax({
+                url: "/OperationPlatform/BackgroundJobInfo",
+                type: 'post',
+                error: function() {
+                    layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+                    //$.tmsg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { infotype: 2 });
+                },
+                data: { "code": code },
+                success: function(data) {
+                    var html = '';
+                    if (data.error == 0) {
+                        if (data.data.length > 0) {
+                            var row = 3;
+                            var col = Math.ceil(data.data.length / row);
+                            var ide = 0;
+                            html =
+                                '<table width="100%" class="table table-bordered table-hover table-condensed" style="margin: 3px 0 0 0; table-layout: fixed;">';
+                            for (var i = 0; i < col;i++)
+                            {
+                                html += "<tr>";
+                                for (var j = 0; j < row;j++)
+                                {
+                                    ide = i * row + j;
+                                    if (ide < data.data.length) {
+                                        html +='<td><div class="checkbox-inline"><label class="checkbox-inline"> ' +
+                                            '<input type = "checkbox" class= "job" value = "'+data.data[ide].id+'">'+data.data[ide].name+'</label></div></td>';
+                                    }
+                                }
+                                html += "</tr>";
+                            }
+                            html += "</table>";
+                            mcontent.html(html);
+                        }
+                    }
+                    else {
+                        layer.msg(data.Message, { icon: 5 });
+                        //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                    }
+                }
+            });
+
+        } else {
+            mcontent.html('');
+        }
+    });
+    $('#btnImport').click(function() {
+        var value = [];
+        $('#myModal').find('.job:checked').each(function() {
+            value.push($(this).val());
+        });
+        if (value.length > 0) {
+            $.ajax({
+                url: "/OperationPlatform/BackgroundJobImport",
+                type: 'post',
+                error: function () {
+                    $.tmsg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { infotype: 2 });
+                },
+                data: {"ids":value,"code":'@customerCode'},
+                success: function (data) {
+                    if (data.Success) {
+                        //$.tmsg("m_jfw", "导入成功！", { infotype: 1 });
+                        layer.msg("导入成功!", { icon: 6 });
+                        setTimeout(reload, 100);
+                    } else {
+                        layer.msg(data.Message, { icon: 5 });
+                        //$.tmsg("m_jfw", data.Message, { infotype: 1 });
+                    }
+                }
+            });
+        } else {
+            layer.msg("未选择要导入的调度事务", { icon: 5 });
+            //$.tmsg("m_jfw", "未选择要导入的调度事务", { infotype: 2 });
+        }
+        $(this).parent().parent().find("input[type='checkbox']").prop("checked", false);
+        $('#myModal').modal('hide');
+    });
+    $("#tempCbs").change(function() {
+        var a = $(this).is(':checked');
+        if (a) {
+            $(this).parent().parent().find(".job").prop("checked", true);
+        } else {
+            $(this).parent().parent().find(".job").prop("checked", false);
+        }
+    });
+    $("#btnCancel").click(function() {
+        $(this).parent().parent().find("input[type='checkbox']").prop("checked", false);
+        $('#myModal').modal('hide');
+    });
+    function modalShow() {
+        $('#myModal').modal('show');
+    }
+</script>

@@ -1,0 +1,79 @@
+﻿@{
+    ViewBag.Title = "SiteInfoIndex";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+    var customerList = ViewData["customerList"] as List<BsonDocument>;
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <a class="p-btn bg-red" href="http://192.168.1.119:8080/" target="_blank">站点一键发布</a>
+                <div class="mt10 mb10 pb10 bb">
+                    <ul id="selectList" class="nav nav-pills">
+                        @if (customerList.Count > 0)
+                        {
+                            var MZInfo = customerList.FirstOrDefault(t => t.String("name") == "蒙正内部");
+                            <li code='@MZInfo.String("customerCode")' onclick="LoadList(this)"><a href="javascript:void(0);">@MZInfo.String("name")</a></li>
+                            foreach (var customer in customerList.Where(t => t.String("name") != "蒙正内部").ToList())
+                            {
+                                <li code='@customer.String("customerCode")' onclick="LoadList(this)"><a href="javascript:void(0);">@customer.String("name")</a></li>
+                            }
+                        }
+                    </ul>                
+                </div>
+                <br />
+                <div id="dataBaseList">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        SetMenu(4, 4);
+        //LoadList();
+        $("#selectList").find("li").first().click();
+        function LoadList(obj) {
+            var customerCode = $(obj).attr("code");
+            $("#selectList").find("li.active").removeClass("active");
+            $(obj).addClass("active");
+            $("#dataBaseList").load("/OperationPlatform/SiteInfoList?customerCode=" + customerCode + "&r=" + Math.random());
+        }
+        function reload() {
+            $("#selectList").find("li.active").click();
+        }
+        function EditSiteInfo(id, customerCode) {
+            var title = "站点信息创建";
+            if (id != 0 && id != "0") {
+                title = "站点信息编辑";
+            }
+            $.YH.box({
+                target: '/OperationPlatform/SiteInfoEdit?siteId=' + id + "&customerCode=" + customerCode + "&r=" + Math.random(),
+                title: title,
+                width: 360,
+                ok: function () {
+                    var formData = $(this).find("form").serialize();
+                    $.ajax({
+                        url: "/Home/SavePostInfo",
+                        type: 'post',
+                        error: function () {
+                            layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+                            //$.tmsg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { infotype: 2 });
+                        },
+                        data: formData,
+                        success: function (data) {
+                            if (data.Success) {
+                                layer.msg("保存成功！", { icon: 6 });
+                                //$.tmsg("m_jfw", "保存成功！", { infotype: 1 });
+                                reload();
+                            }
+                            else {
+                                layer.msg(data.Message, { icon: 5 });
+                                //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    </script>

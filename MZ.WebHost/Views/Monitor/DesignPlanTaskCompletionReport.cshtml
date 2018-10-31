@@ -1,0 +1,101 @@
+﻿@{
+    Layout = "";
+    List<BsonDocument> reportList = ViewData["reportList"] != null ? ViewData["reportList"] as List<BsonDocument> : new List<BsonDocument>();
+    List<BsonDocument> headerList = ViewData["headerList"] != null ? ViewData["headerList"] as List<BsonDocument> : new List<BsonDocument>();
+    int maxLevel = 1;
+    if (headerList.Count() > 0)
+    {
+        maxLevel = headerList.Max(i => i.Int("nodeLevel"));
+    }
+    TreeHandle.InitTableNode(headerList, maxLevel);
+    headerList = headerList.OrderBy(i => i.Text("nodeKey")).ToList();
+    int colCount = headerList.Count() + 1;
+    int index = 0;
+}
+<table class="table table-hover">
+    <colgroup>
+        <col width="5%">
+        <col width="">
+        <col width="7%">
+        <col width="7%">
+        <col width="10%">
+        <col width="8%">
+        <col width="10%">
+        <col width="10%">
+        <col width="9%">
+        <col width="7%">
+        <col width="5%">
+        <col width="5%">
+    </colgroup>
+        <thead>
+            @for (var i = 1; i <= maxLevel; i++)
+            {
+                <tr class="p-tableborder-title">
+                    @if (i == 1)
+                {
+                        <th rowspan="@maxLevel">
+                            序号
+                        </th>
+                    }
+                    @foreach (var head in headerList.Where(c => c.Int("nodeLevel") == i).ToList())
+                    {
+                        var curNodeList = headerList.Where(c => c.Int("nodePid") == head.Int("headerId")).ToList();
+                        var rowspan = curNodeList.Count() > 0 ? 1 : head.Int("nodeLevel") == maxLevel ? 1 : (maxLevel - head.Int("nodeLevel") + 1);
+                        var colspan = curNodeList.Count() > 0 ? curNodeList.Count() : 1;
+                        <th rowspan="@rowspan" colspan="@colspan">
+                            @head.String("name")
+                        </th>
+                    }
+                </tr>
+            }
+        </thead>
+        @foreach (var temp in reportList.OrderBy(c=>c.Text("nodekey")).ToList())
+        {
+            var nodeLevel = temp.String("nodekey").Split('.').Count();
+            if (nodeLevel == 1)
+            {
+                continue;
+            }          
+
+            <tr>
+                <td>
+                    @(++index)
+                </td>
+                @foreach (var head in headerList.Where(c => c.Int("isLeaf") == 1).ToList())
+                {
+                    if (!head.String("storageFieldName").Contains("formCompleteness"))
+                    {
+                        var pedLeft = head.String("storageFieldName") == "name" ? 10 * (nodeLevel - 1) : 0;
+                        <td>
+                            <span style="padding-left:@(pedLeft)px">@temp.String(head.String("storageFieldName"))</span>
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="td_progress">
+                            @if (!string.IsNullOrEmpty(temp.String(head.String("storageFieldName"))))
+                            {
+                                <span>@temp.String(head.String("storageFieldName"))%</span>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: @temp.String(head.String("storageFieldName"))%">
+                                        <span class="sr-only">@temp.String(head.String("storageFieldName"))% Complete (info)</span>
+                                    </div>
+                                </div>
+                            }
+                        </td>
+                    }
+
+                }
+            </tr>
+        }
+        @if (reportList.Count == 0)
+        {
+            <tr>
+                <td colspan="@colCount">
+                    暂无！
+                </td>
+            </tr>
+        }
+    </table>
+    
+

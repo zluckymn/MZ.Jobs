@@ -1,0 +1,72 @@
+﻿@{
+    var type = (int)ViewData["type"];
+    var xlist = ViewData["xlist"] as string;
+    var ylist = ViewData["ylist"] as string;
+ }
+<div id="chartView">
+    <div class="p-tab_time" style="margin-left:900px;">
+        <a @if (type == 1) { <text> class="select" </text>  } onclick="changeUseUser(1)">周</a>
+        <a @if (type == 2) { <text> class="select" </text>  } onclick="changeUseUser(2)">月</a>
+        @*<a @if (type == 3) { <text> class="select" </text> } onclick="LoadOrgs(3,@order)">年</a>*@
+    </div>
+    <div style="height: 175px;margin-top: 15px;" id="Chart">
+    </div>
+</div>
+<script>
+    var xlist = '@xlist';
+    var ylist = '@ylist';
+    var xArr = xlist.split(',');
+    var yArr = ylist.split(',');
+    var myChart = echarts.init(document.getElementById('Chart'));
+    option = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            top: '4%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: xArr,//['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+            axisLabel: {
+                show: true
+            },
+            axisLine: {
+                lineStyle: {
+                    width: 2
+                }
+            }
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                show: true
+            },
+            axisLine: {
+                lineStyle: {
+                    width: 2
+                }
+            }
+        },
+        series: [
+            {
+                name: '使用人数',
+                type: 'line',
+                stack: '总量',
+                data: yArr //[120, 132, 101, 134, 90, 230, 210]
+            }
+        ]
+    };
+    myChart.setOption(option);
+    /**
+    * 切换时 只需重新请求给option 赋值即可
+    */
+    function changeUseUser(type) {
+        $("#chartView").closest("div").load('/Monitor/MonitorUseUserChart?type=' + type + "&r=" + Math.random());
+    }
+</script>

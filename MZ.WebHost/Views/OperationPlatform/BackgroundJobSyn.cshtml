@@ -1,0 +1,42 @@
+﻿@{
+    var customerList = ViewData["customerList"] as List<BsonDocument>;
+    var jobList = ViewData["jobList"] as List<BsonDocument>;
+ }
+<div>
+    客户列表：
+    <div><input type="checkbox" name="customer" onclick="allCheked(this)" />全选</div>
+    <ul id="custormerList">
+        @foreach (var customer in customerList)
+        {
+            <li><input type="checkbox" value="@customer.String("customerCode")" />@customer.String("name")</li>
+        }
+    </ul>
+    调度事务列表：
+    <div><input type="checkbox" name="job" onclick="allCheked(this)" />全选</div>
+    <ul id="jobList">
+        @foreach (var job in jobList)
+        {
+            <li><input type="checkbox" value="@job.String("jobId")" />@job.String("name")</li>
+        }
+    </ul>
+</div>
+<script>
+    function allCheked(obj) {
+        var name = $(obj).attr("name");
+        if (name == "customer") {
+            if ($(obj).is(':checked'))
+            {
+                $("#custormerList").find("input[type=checkbox]").attr("checked", "checked");
+            } else {
+                $("#jobList").find("input[type=checkbox]").removeAttr("checked");
+            }
+            
+        } else {
+            if ($(obj).is(':checked')) {
+                $("#jobList").find("input[type=checkbox]").attr("checked", "checked");
+            } else {
+                $("#jobList").find("input[type=checkbox]").removeAttr("checked");
+            }
+        }
+    }
+</script>

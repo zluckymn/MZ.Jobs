@@ -1,0 +1,76 @@
+﻿@{
+    Layout = "";
+    var statementLib = ViewData["statementLib"] as BsonDocument;
+    var updateQuery = "";
+    var guid = Guid.NewGuid().ToString();
+    if (!statementLib.IsNullOrEmpty())
+    {
+        guid = statementLib.String("guid");
+        updateQuery = "db.StatementDataRuleLib.distinct('_id',{'libId':'" + statementLib.String("libId") + "'})";
+    }
+}
+<form>
+    <input type="hidden" name="tbName" value="StatementDataRuleLib" />
+    <input type="hidden" name="queryStr" value="@updateQuery" />
+    <input type="hidden" name="guid" value="@guid" />
+    <input type="hidden" name="isReverse" value="1" />
+    <table width="100%" class="table-noBorder">
+        <tr>
+            <td>
+                名称:
+            </td>
+            <td>
+                <input type="text" name="name" value="@statementLib.String("name")" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                规则描述:
+            </td>
+            <td>
+                <input type="text" name="remark" value="@statementLib.String("remark")" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                主表名:
+            </td>
+            <td>
+                <input type="text" name="mainTbName" value="@statementLib.String("mainTbName")" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                外键表名:
+            </td>
+            <td>
+                <input type="text" name="foreignTbName" value="@statementLib.String("foreignTbName")" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                外键关联值:
+            </td>
+            <td>
+                <input type="text" name="foreignKey" value="@statementLib.String("foreignKey")" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                固定值:
+            </td>
+            <td>
+                <input type="text" name="fixValue" value="@statementLib.String("fixValue")" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                是否使用:
+            </td>
+            <td>
+                <input type="radio" name="isUse" value="1" @if (statementLib.Int("isUse") == 1 || statementLib.Int("isUse") == 0) { <text> checked="checked" </text>   } />是
+                <input type="radio" name="isUse" value="2" @if (statementLib.Int("isUse") == 2) { <text> checked="checked" </text>   } />否
+            </td>
+        </tr>
+    </table>
+</form>

@@ -1,0 +1,184 @@
+﻿@using MongoDB.Bson
+@{
+    var sitesList = ViewData["sitesList"] as List<BsonDocument>;
+    var server = ViewData["server"] as BsonDocument;
+    var index = 0;
+    Layout = "";
+    var runState = new Dictionary<string,string>();
+    runState.Add("1","启动中");
+    runState.Add("2", "已启动");
+    runState.Add("3", "停止中");
+    runState.Add("4", "已停止");
+    runState.Add("5", "挂起中");
+    runState.Add("6", "以挂起");
+    runState.Add("7", "持续中");
+
+}
+
+
+
+<a class="p-btn" href="javascript:void(0)" onclick="reload()">返回</a>
+<i>  |  </i>当前服务器<i>&gt;</i>@server.String("name")
+<a class="p-btn" href="javascript:;" onclick="EditSite()">创建站点</a>
+
+
+@if (sitesList.Count > 0)
+{
+    <table width="100%" class="table table-bordered" style=" margin-top:10px;">
+        <thead>
+            <tr>
+                <th align="left">序号</th>
+                <th align="left">站点名称</th>
+                <th align="left">端口</th>
+                <th align="left">应用程序池</th>
+                <th align="left">物理路径</th>
+                <th align="left">运行状态</th>
+                <th align="left">操作</th>
+            </tr>
+        </thead>
+        @foreach (var sites in sitesList)
+        {
+            index++;
+            var portAry = sites.String("ServerBindings").Split(',');
+            var portList = new List<string>();
+            foreach (var port in portAry)
+            {
+                if (!string.IsNullOrEmpty(port) && port.Split(':').Count()>0)
+                {
+                    portList.Add(port.Split(':')[1]);
+                }
+            }
+            <tr>
+                <td>@index</td>
+                <td>@sites.String("ServerComment")</td>
+                <td>@string.Join(",",portList)</td>
+                <td>@sites.String("AppPoolId")
+                @if (!portList.Contains("12315"))
+                {
+                    <br />
+                    <span style="float:left "> @sites.String("AppPoolState")&nbsp;&nbsp;&nbsp;</span>
+                    <a class="fa mr5 p-f_blue" title="回收" href="javascript:;" onclick="OperateAppPools('@sites.String("AppPoolId")','1')">回收</a>
+                    <a class="fa mr5 p-f_blue" title="启动" href="javascript:;" onclick="OperateAppPools('@sites.String("AppPoolId")','2')">启动</a>
+                    <a class="fa mr5 p-f_red" title="停止" href="javascript:;" onclick="OperateAppPools('@sites.String("AppPoolId")','3')">停止</a>
+                }
+                </td>
+                <td>@sites.String("PhysicalPath")</td>
+                <td>@runState[sites.String("ServerState")]</td>
+                <td>
+                    @if (!portList.Contains("12315")) {
+                    <a class="fa mr5 p-f_blue" title="启动" href="javascript:;" onclick="OperateSite('@sites.String("ServerComment")','1')">启动</a>
+                    <a class="fa mr5 p-f_red" title="停止" href="javascript:;" onclick="OperateSite('@sites.String("ServerComment")','2')">停止</a>
+                    <a class="fa mr5 p-f_blue" title="重启" href="javascript:;" onclick="OperateSite('@sites.String("ServerComment")','3')">重启</a>
+                    <a class="fa mr5 p-f_red" title="删除" href="javascript:void(0)" onclick="OperateSite('@sites.String("ServerComment")','4')">删除</a>
+                    }
+                    else
+                    {
+                            <span class="p-f_red">受保护站点,禁止操作！</span>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div class="yh-msg">
+        暂无站点信息
+    </div>
+}
+
+
+<script>
+    var serverId = '@server.String("serverId")'
+    function EditSite() {
+        $.YH.box({
+            target: '/OperationPlatform/ServerIISSiteEdit?r=' + Math.random(),
+            title: "创建站点",
+            width: 360,
+            ok: function () {
+                var formData = $(this).find("form").serialize();
+                $.ajax({
+                    url: "/OperationPlatform/CreateSites",
+                    type: 'post',
+                    error: function () {
+                        layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+                    },
+                    data: formData + "&serverId=" + serverId,
+                    success: function (data) {
+                        if (data.Success) {
+                            layer.msg("保存成功！", { icon: 6 });
+                            LoadIISSite(serverId);
+                        }
+                        else {
+                            layer.msg(data.Message, { icon: 5 });
+                            //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function OperateSite(siteName,opType) {
+        if (opType == "4") {
+            if (!confirm("确认删除当前站点？")) {
+                return false;
+            }
+        }
+        $.ajax({
+            url: "/OperationPlatform/OperateSite",
+            type: 'post',
+            error: function () {
+                layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+            },
+            data: {
+                siteName :siteName,
+                opType: opType,
+                serverId: serverId
+            },
+            success: function (data) {
+                if (data.Success) {
+                    layer.msg("操作成功！", { icon: 6 });
+                    LoadIISSite(serverId);
+                }
+                else {
+                    layer.msg(data.Message, { icon: 5 });
+                    //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                }
+            }
+        });
+
+    }
+
+
+    function OperateAppPools(appPoolName, opType) {
+        if (opType == "4") {
+            if (!confirm("确认删除当前站点？")) {
+                return false;
+            }
+        }
+        $.ajax({
+            url: "/OperationPlatform/OperateAppPools",
+            type: 'post',
+            error: function () {
+                layer.msg("未知错误，请联系服务器管理员，或者刷新页面重试", { icon: 5 });
+            },
+            data: {
+                appPoolName: appPoolName,
+                opType: opType,
+                serverId: serverId
+            },
+            success: function (data) {
+                if (data.Success) {
+                    layer.msg("操作成功！", { icon: 6 });
+                    LoadIISSite(serverId);
+                }
+                else {
+                    layer.msg(data.Message, { icon: 5 });
+                    //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                }
+            }
+        });
+
+    }
+</script>

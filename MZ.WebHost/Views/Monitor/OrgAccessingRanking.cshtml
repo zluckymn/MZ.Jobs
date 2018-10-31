@@ -1,0 +1,184 @@
+﻿@{
+    var orgList = ViewData["orgList"] as List<BsonDocument>;
+    var type = (int)ViewData["type"];
+    var order = (int)ViewData["order"];
+    var xlist = ViewData["xlist"] as string;
+    var ylist = ViewData["ylist"] as string;
+    var index = 0;
+    Layout = "";
+}
+
+    <div class="panel panel-default p-userAccess">
+        <div class="bg-blue">
+            <div class="clearfix">
+                <h5 class="p-title2 p-f_white fl">部门访问情况</h5>
+                <div class="p-tab_time">
+                    <a @if(type==1){ <text> class="select"</text>}  onclick="LoadOrgs(1,@order)" >周</a>
+                    <a @if(type==2){ <text> class="select"</text>} onclick="LoadOrgs(2,@order)">月</a>
+                    <a @if(type==3){ <text> class="select"</text>} onclick="LoadOrgs(3,@order)">年</a>
+                </div>
+                <div style="height: 175px;margin-top: 15px;" id="departVisitSituChart">
+                </div>
+            </div>
+        </div>
+        <div class="clearfix" style="padding:10px; background-color:#0079b6;">
+            <h5 class="p-title2 p-f_white fl">部门访问排行</h5>
+            <div class="dropdown fr">
+                <button style="color:white; float:right;" class="btn btn-user btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @if (type == 1) {
+                        <text> 按登陆次数排序</text>
+                    }else
+                    {
+                        <text>按操作次数排序</text>
+                    }
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li><a href="javascript:;" onclick="LoadOrgs(@type,1)" >按登陆次数排序</a></li>
+                    <li><a href="javascript:;" onclick="LoadOrgs(@type,2)" >按操作次数排序</a></li>
+                </ul>
+            </div>
+        </div>
+        @if (orgList.Count > 0)
+        {
+        <div class="table-responsive pre-scrollable" style="padding:10px; height:213px;">
+            <table class="table table-hover">
+                <colgroup>
+                    <col width="5%">
+                    <col width="15%">
+                    <col width="10%">
+                    <col width="10%">
+                    <col width="10%">
+                    <col width="10%">
+                    <col width="10%">
+                    <col width="10%">
+                    <col width="10%">
+                    <col width="10%">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>排行</th>
+                        <th>部门</th>
+                        <th>登陆人数</th>
+                        <th>用户最高登录次数</th>
+                        <th>平均登录次数</th>
+                        <th>登陆次数</th>
+                        <th>默认登陆次数</th>
+                        <th>手机端登陆次数</th>
+                        <th>单点登陆次数</th>
+                        <th>访问操作次数</th>
+                    </tr>
+                </thead>
+                @foreach (var org in orgList)
+                {
+                    index++;
+                    var className = "";
+                    switch (index)
+                    {
+                        case 1:
+                            className = "bg-red";
+                            break;
+                        case 2:
+                            className = "bg-blue";
+                            break;
+                        case 3:
+                            className = "bg-green";
+                            break;
+                        default:
+                            className = "bg-gray1";
+                            break;
+                    }
+                    <tr>
+                        <td><a class='@className rank'>@index</a></td>
+                        <td>@org.String("name")</td>
+                        <td>@org.String("userCount")</td>
+                        <td>@org.String("loginMax")</td>
+                        <td>@org.String("averageLoginCount")</td>
+                        <td>@org.String("loginCount")</td>
+                        <td>@org.String("defaultLoginCount")</td>
+                        <td>@org.String("appLoginCount")</td>
+                        <td>@org.String("ssoLoginCount")</td>
+                        <td>@org.String("actionCount")</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        }
+        else
+        {
+            <div style="padding:10px; height:213px;">
+                    暂无数据
+            </div>
+        }
+    </div>
+
+<script>
+    var xlist = '@xlist';
+    var ylist = '@ylist';
+    var xArr = xlist.split(',');
+    var yArr = ylist.split(',');
+    var myChart = echarts.init(document.getElementById('departVisitSituChart'));
+    option = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            top: '4%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: xArr,//['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+            axisLabel: {
+                show: true,
+                textStyle: {
+                    color: '#fff'
+                }
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#fff',
+                    width: 2
+                }
+            }
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                show: true,
+                textStyle: {
+                    color: '#fff'
+                }
+            },
+            axisLine: {
+                lineStyle: {
+                    color: '#fff',
+                    width: 2
+                }
+            }
+        },
+        series: [
+            {
+                name: '登录次数（次）',
+                type: 'line',
+                stack: '总量',
+                itemStyle: {
+                    normal: {
+                        lineStyle: {
+                            color: '#FFFFFF'
+                        }
+                    }
+                },
+                data: yArr //[120, 132, 101, 134, 90, 230, 210]
+            }
+        ]
+    };
+    myChart.setOption(option);
+    /**
+    * 切换时 只需重新请求给option 赋值即可
+    */
+</script>

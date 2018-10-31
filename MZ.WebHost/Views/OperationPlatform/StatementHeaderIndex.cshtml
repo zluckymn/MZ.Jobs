@@ -1,0 +1,118 @@
+﻿@{
+    var statement = ViewData["statement"] as BsonDocument;
+    var headerList = ViewData["headerList"] as List<BsonDocument>;
+    Layout = "";
+}
+<div id="heads">
+<a class="p-btn" href="javascript:;" onclick="EditHeader('0','0')" >创建一级表头</a>
+@if (headerList.Count > 0)
+{
+<table width="100%" class="table">
+    <thead>
+    <tr class="p-table_head">
+        <th align="left">自动编号</th>
+        <th align="left">名称</th>
+        <th align="left">是否显示</th>
+        <th align="left">操作</th>
+    </tr>
+    </thead>
+    @{
+        int i = 0;
+        var KeyDic = new Dictionary<string, string>();
+        var KeyDicCount = new Dictionary<string, int>();
+    }
+    @foreach (var header in headerList)
+    {
+        var nodePid = header.Text("nodePid");
+        var curIdex = (i + 1).ToString();
+        if (KeyDic.ContainsKey(nodePid))
+        {
+            var orderIndex = 1;
+            if (KeyDicCount.ContainsKey(nodePid))
+            {
+                orderIndex = orderIndex + KeyDicCount[nodePid];
+                KeyDicCount[nodePid] = KeyDicCount[nodePid] + 1;
+            }
+            else
+            {
+                KeyDicCount.Add(nodePid, 1);
+            }
+            curIdex = string.Format("{0}.{1}", KeyDic[nodePid], orderIndex);
+        }
+        else
+        {
+            i++;
+        }
+        KeyDic.Add(header.Text("headerId"), curIdex);
+        var isShow = header.Int("isShow") == 1 ? "是" : "否";
+        var nodeLevel = header.Int("nodeLevel");
+    <tr>
+        <td>@curIdex</td>
+        <td>
+            <div class=" WellForm">
+                <div class='yh-level yh-level_0@{@nodeLevel} fl'>
+                    <div class="TextL">
+                    </div>
+                    <input class="WellText" readonly="readonly" type="text" value="@header.String("name")"
+                        size="50" />
+                    <div class="TextR">
+                    </div>
+                </div>
+                <span class="p-addSetting p-hoverShow-itm"><a class="p-addSetting-ml" href="javascript:void(0);"
+                    onclick="EditHeader(0, @header.Int("headerId"));">添加子表头 </a></span>
+            </div>
+        </td>
+        <td>@isShow</td>
+        <td>
+            <a class="fa fa-pencil mr5 p-f_blue" title="编辑" href="javascript:;" onclick="EditHeader('@header.String("headerId")','@header.String("nodePid")')" ></a>
+            <a class="fa fa-close mr5 p-f_red" title="删除" href="javascript:void(0)" tbname="StatementHeader" querystr="db.StatementHeader.distinct('_id',{'headerId':'@header.String("headerId")'})" onclick="CustomDeleteItem(this,loadHeaderList);"></a>
+        </td>
+    </tr>
+    }
+</table>
+}
+else {
+    <div>
+        暂无表头信息
+    </div>
+}
+</div>
+<script>
+    function loadHeaderList() {
+        $("#heads").closest("div").load('/OperationPlatform/StatementHeaderIndex?statementId=@statement.String("statementId")&r=' + Math.random());
+    }
+    function EditHeader(id,nodePid) {
+        var title = "表头创建";
+        if (id != 0 && id != "0") {
+            title = "表头编辑";
+        }
+        $.YH.box({
+            target: '/OperationPlatform/StatementHeaderEdit?headerId=' + id + "&nodePid=" + nodePid + "&statementId=@statement.String("statementId")&r=" + Math.random(),
+            title: title,
+            width: 450,
+            ok: function () {
+                var formData = $(this).find("form").serialize();
+                $.ajax({
+                    url: "/Home/SavePostInfo",
+                    type: 'post',
+                    error: function () {
+                        layer.msg(data.Message, { icon: 5 });
+                        //$.tmsg("m_jfw", "未知错误，请联系服务器管理员，或者刷新页面重试", { infotype: 2 });
+                    },
+                    data: formData,
+                    success: function (data) {
+                        if (data.Success) {
+                            layer.msg("保存成功！", { icon: 6 });
+                            //$.tmsg("m_jfw", "保存成功！", { infotype: 1 });
+                            loadHeaderList();
+                        }
+                        else {
+                            layer.msg(data.Message, { icon: 5 });
+                            //$.tmsg("m_jfw", data.Message, { infotype: 2 });
+                        }
+                    }
+                });
+            }
+        });
+    }
+</script>
